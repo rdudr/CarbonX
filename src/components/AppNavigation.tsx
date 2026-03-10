@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { Button } from '@/components/ui/button';
 import {
     LayoutDashboard,
     Activity,
@@ -13,6 +15,8 @@ import {
     Zap,
     Menu,
     X,
+    LogOut,
+    UserCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,10 +31,20 @@ const NAV_ITEMS = [
 
 // ─── Desktop Top Navigation ───────────────────────────────────────────────────
 function DesktopNav({ pathname }: { pathname: string }) {
+    const { role, logout, user } = useAuth();
+
+    // Role-based filtering
+    const visibleNavItems = NAV_ITEMS.filter(item => {
+        if (role === 'ADMIN') return true;
+        if (role === 'ENGINEER') return ['/', '/machines', '/energy', '/settings'].includes(item.href);
+        if (role === 'MANAGER') return ['/', '/carbon', '/reports'].includes(item.href);
+        return false;
+    });
+
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-6 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
+            className="hidden md:flex items-center justify-between px-6 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
@@ -39,7 +53,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
 
             {/* Nav Links */}
             <ul className="flex items-center gap-1" role="list">
-                {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+                {visibleNavItems.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href;
                     return (
                         <li key={href}>
@@ -49,7 +63,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
                                 className={cn(
                                     'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
                                     isActive
-                                        ? 'bg-brand-green-light text-white shadow-md'
+                                        ? 'bg-brand-green-dark text-white shadow-md'
                                         : 'text-brand-green-dark/70 hover:text-brand-green-dark hover:bg-brand-green-light/5'
                                 )}
                             >
@@ -61,10 +75,21 @@ function DesktopNav({ pathname }: { pathname: string }) {
                 })}
             </ul>
 
-            {/* Status indicator */}
-            <div className="flex items-center gap-2 text-xs text-brand-green-dark/60 font-medium">
-                <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
-                Online
+            {/* User Profile & Logout */}
+            <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-full border border-black/5">
+                    <UserCircle size={14} className="text-brand-green-dark/40" />
+                    <span className="text-[10px] font-black uppercase text-brand-green-dark/60 tracking-wider font-mono">
+                        {role}
+                    </span>
+                    <button onClick={logout} className="ml-2 p-1 hover:bg-red-50 text-red-400 hover:text-red-600 rounded-md transition-colors" title="Logout">
+                        <LogOut size={14} />
+                    </button>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-brand-green-dark/60 font-medium whitespace-nowrap">
+                    <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
+                    Online
+                </div>
             </div>
         </nav>
     );
@@ -73,6 +98,14 @@ function DesktopNav({ pathname }: { pathname: string }) {
 // ─── Mobile Navigation (hamburger) ──────────────────────────────────────────
 function MobileNav({ pathname }: { pathname: string }) {
     const [isOpen, setIsOpen] = useState(false);
+    const { role, logout, user } = useAuth();
+
+    const visibleNavItems = NAV_ITEMS.filter(item => {
+        if (role === 'ADMIN') return true;
+        if (role === 'ENGINEER') return ['/', '/machines', '/energy', '/settings'].includes(item.href);
+        if (role === 'MANAGER') return ['/', '/carbon', '/reports'].includes(item.href);
+        return false;
+    });
 
     useEffect(() => {
         setIsOpen(false);
@@ -131,7 +164,7 @@ function MobileNav({ pathname }: { pathname: string }) {
 
                         <nav>
                             <ul className="flex flex-col gap-1" role="list">
-                                {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+                                {visibleNavItems.map(({ href, label, icon: Icon }) => {
                                     const isActive = pathname === href;
                                     return (
                                         <li key={href}>
@@ -141,7 +174,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                                                 className={cn(
                                                     'flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200',
                                                     isActive
-                                                        ? 'bg-brand-green-light text-white shadow-lg'
+                                                        ? 'bg-brand-green-dark text-white shadow-lg'
                                                         : 'text-brand-green-dark/70 hover:bg-brand-green-light/5'
                                                 )}
                                             >
@@ -154,9 +187,18 @@ function MobileNav({ pathname }: { pathname: string }) {
                             </ul>
                         </nav>
 
-                        <div className="mt-auto flex items-center gap-2 text-xs text-brand-green-dark/40 px-1 font-medium">
-                            <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
-                            Connected to RX Gateway
+                        <div className="mt-auto space-y-4">
+                            <button
+                                onClick={logout}
+                                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-red-50 text-red-600 font-black text-[10px] uppercase tracking-widest border border-red-500/10"
+                            >
+                                Sign Out Session
+                                <LogOut size={16} />
+                            </button>
+                            <div className="flex items-center gap-2 text-xs text-brand-green-dark/40 px-1 font-medium">
+                                <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
+                                {role} Connected
+                            </div>
                         </div>
                     </div>
                 </div>
