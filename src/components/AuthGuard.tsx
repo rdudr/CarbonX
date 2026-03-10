@@ -16,7 +16,10 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
 
     useEffect(() => {
         if (!loading) {
-            if (!isAuthenticated && pathname !== '/login') {
+            const publicPaths = ['/login', '/'];
+            const isPublicPath = publicPaths.includes(pathname);
+
+            if (!isAuthenticated && !isPublicPath) {
                 router.push('/login');
             } else if (isAuthenticated && requiredRole && role !== 'ADMIN' && role !== requiredRole) {
                 // If logged in but lacks specific role (ADMIN can see everything)
