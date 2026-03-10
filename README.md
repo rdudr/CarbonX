@@ -1,4 +1,4 @@
-# CarbonX PowerByte Platform
+# CarbonX 
 
 CarbonX PowerByte is an **AI-Driven Industrial IoT Platform** deployed in Next.js using a responsive **Liquid Glass UI**. It is designed to monitor **energy usage, carbon footprint, and machine health** in industrial environments using an RX (Gateway) and TX (Node) architecture.
 
