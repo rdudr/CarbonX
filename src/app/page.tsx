@@ -38,6 +38,7 @@ function generateMockGateway(tick: number, nodeConfigs: any[]): RXEnergyUnit {
     return {
       nodeId: config.id,
       name: config.name,
+      zone: config.zone,
       phaseType: config.phaseType,
       targetKw: config.targetKw,
       kwh: baseKwh + jitter() * 10,

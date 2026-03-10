@@ -6,6 +6,7 @@ import type { PhaseType } from '@/types/energy';
 interface TXNodeConfig {
     id: string;
     name: string;
+    zone: string;
     phaseType: PhaseType;
     targetKw: number;
 }
@@ -23,10 +24,10 @@ interface SystemContextType {
 
 const DEFAULT_CONFIG: SystemConfig = {
     nodes: [
-        { id: 'TX-1', name: 'CNC Machine A', phaseType: 'three', targetKw: 15 },
-        { id: 'TX-2', name: 'Lathe B', phaseType: 'three', targetKw: 10 },
-        { id: 'TX-3', name: 'Compressor Array', phaseType: 'three', targetKw: 50 },
-        { id: 'TX-4', name: 'HVAC System', phaseType: 'single', targetKw: 80 },
+        { id: 'TX-1', name: 'CNC Machine A', zone: 'Zone-A', phaseType: 'three', targetKw: 15 },
+        { id: 'TX-2', name: 'Lathe B', zone: 'Zone-A', phaseType: 'three', targetKw: 10 },
+        { id: 'TX-3', name: 'Compressor Array', zone: 'Zone-B', phaseType: 'three', targetKw: 50 },
+        { id: 'TX-4', name: 'HVAC System', zone: 'Zone-C', phaseType: 'single', targetKw: 80 },
     ],
     lossThreshold: 10,
 };

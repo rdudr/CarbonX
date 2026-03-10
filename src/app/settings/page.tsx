@@ -54,6 +54,19 @@ export default function SettingsPage() {
 
                                     <div className="flex-1 p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                                         <div>
+                                            <label className="text-[10px] font-black opacity-40 uppercase block mb-2">Operational Zone</label>
+                                            <select
+                                                value={node.zone}
+                                                onChange={(e) => updateNode(node.id, { zone: e.target.value })}
+                                                className="w-full bg-white/50 border border-black/5 rounded-xl px-3 py-2 text-sm font-bold focus:ring-2 ring-brand-green-light outline-none"
+                                            >
+                                                <option value="Zone-A">Zone-A</option>
+                                                <option value="Zone-B">Zone-B</option>
+                                                <option value="Zone-C">Zone-C</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
                                             <label className="text-[10px] font-black opacity-40 uppercase block mb-2">Phase Mode</label>
                                             <select
                                                 value={node.phaseType}
@@ -118,7 +131,7 @@ export default function SettingsPage() {
                                         min="2"
                                         max="25"
                                         value={config.lossThreshold}
-                                        onChange={(e) => updateThreshold(Number(e.target.value))}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateThreshold(Number(e.target.value))}
                                         className="w-full h-3 bg-white/40 rounded-full appearance-none cursor-pointer accent-orange-600"
                                     />
                                     <div className="flex justify-between text-[10px] font-black opacity-40">

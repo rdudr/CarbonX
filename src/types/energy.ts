@@ -35,6 +35,8 @@ export interface TXEnergyUnit {
     nodeId: string;
     /** Human-readable machine name */
     name: string;
+    /** Operational Zone (e.g. "Zone-A") */
+    zone: string;
     /** Phase type (Single or Three Phase) */
     phaseType: PhaseType;
     /** Targeted or rated power in kW for health comparison */
