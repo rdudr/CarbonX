@@ -34,10 +34,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
-                <Image src="/logo.png" alt="CarbonX Logo" width={32} height={32} className="group-hover:scale-105 transition-transform" />
-                <span className="text-brand-green-dark font-bold text-lg tracking-tight">
-                    Carbon<span className="text-brand-green-light">X</span>
-                </span>
+                <Image src="/logo.png" alt="CarbonX Logo" width={110} height={32} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
             </Link>
 
             {/* Nav Links */}
@@ -93,10 +90,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                 className="md:hidden flex items-center justify-between px-4 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
             >
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.png" alt="CarbonX Logo" width={28} height={28} />
-                    <span className="text-brand-green-dark font-bold tracking-tight">
-                        Carbon<span className="text-brand-green-light">X</span>
-                    </span>
+                    <Image src="/logo.png" alt="CarbonX Logo" width={100} height={28} className="object-contain" priority />
                 </Link>
 
                 <button
@@ -124,10 +118,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                     >
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Image src="/logo.png" alt="CarbonX Logo" width={24} height={24} />
-                                <span className="text-brand-green-dark font-bold text-lg tracking-tight">
-                                    Carbon<span className="text-brand-green-light">X</span>
-                                </span>
+                                <Image src="/logo.png" alt="CarbonX Logo" width={90} height={24} className="object-contain" />
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}
