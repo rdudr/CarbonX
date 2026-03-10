@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -15,7 +16,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ─── Navigation items config ─────────────────────────────────────────────────
 const NAV_ITEMS = [
     { href: '/', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/machines', label: 'Machine Health', icon: Activity },
@@ -30,16 +30,13 @@ function DesktopNav({ pathname }: { pathname: string }) {
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-6 py-3
-                 glass border-b border-brand-green-light/20 shadow-lg"
+            className="hidden md:flex items-center justify-between px-6 py-2
+                 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
         >
             {/* Logo + Brand */}
-            <Link href="/" className="flex items-center gap-3 group" id="nav-logo">
-                <div className="w-8 h-8 rounded-lg bg-brand-green-light flex items-center justify-center
-                        group-hover:scale-110 transition-transform">
-                    <Zap size={18} className="text-white" />
-                </div>
-                <span className="text-brand-white font-bold text-lg tracking-tight">
+            <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
+                <Image src="/logo.png" alt="CarbonX Logo" width={32} height={32} className="group-hover:scale-105 transition-transform" />
+                <span className="text-brand-green-dark font-bold text-lg tracking-tight">
                     Carbon<span className="text-brand-green-light">X</span>
                 </span>
             </Link>
@@ -54,10 +51,10 @@ function DesktopNav({ pathname }: { pathname: string }) {
                                 href={href}
                                 id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
                                 className={cn(
-                                    'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200',
+                                    'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
                                     isActive
-                                        ? 'bg-brand-green-light/20 text-brand-green-light border border-brand-green-light/30'
-                                        : 'text-brand-white/70 hover:text-brand-white hover:bg-white/5'
+                                        ? 'bg-brand-green-light text-white shadow-md'
+                                        : 'text-brand-green-dark/70 hover:text-brand-green-dark hover:bg-brand-green-light/5'
                                 )}
                             >
                                 <Icon size={16} />
@@ -69,9 +66,9 @@ function DesktopNav({ pathname }: { pathname: string }) {
             </ul>
 
             {/* Status indicator */}
-            <div className="flex items-center gap-2 text-xs text-brand-white/60">
+            <div className="flex items-center gap-2 text-xs text-brand-green-dark/60 font-medium">
                 <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
-                System Online
+                Online
             </div>
         </nav>
     );
@@ -81,12 +78,10 @@ function DesktopNav({ pathname }: { pathname: string }) {
 function MobileNav({ pathname }: { pathname: string }) {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Close menu on route change
     useEffect(() => {
         setIsOpen(false);
     }, [pathname]);
 
-    // Prevent body scroll when menu is open
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : '';
         return () => { document.body.style.overflow = ''; };
@@ -94,17 +89,14 @@ function MobileNav({ pathname }: { pathname: string }) {
 
     return (
         <>
-            {/* Mobile Top Bar */}
             <div
                 id="mobile-topbar"
-                className="md:hidden flex items-center justify-between px-4 py-3
-                   glass border-b border-brand-green-light/20 shadow-lg"
+                className="md:hidden flex items-center justify-between px-4 py-2
+                   glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
             >
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-brand-green-light flex items-center justify-center">
-                        <Zap size={15} className="text-white" />
-                    </div>
-                    <span className="text-brand-white font-bold tracking-tight">
+                    <Image src="/logo.png" alt="CarbonX Logo" width={28} height={28} />
+                    <span className="text-brand-green-dark font-bold tracking-tight">
                         Carbon<span className="text-brand-green-light">X</span>
                     </span>
                 </Link>
@@ -113,53 +105,44 @@ function MobileNav({ pathname }: { pathname: string }) {
                     id="hamburger-btn"
                     onClick={() => setIsOpen(!isOpen)}
                     aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
-                    aria-expanded={isOpen}
-                    aria-controls="mobile-menu"
                     className="w-9 h-9 flex items-center justify-center rounded-lg
-                     text-brand-white/80 hover:text-brand-white hover:bg-white/10
+                     text-brand-green-dark/80 hover:bg-brand-green-light/10
                      transition-all duration-200 cursor-pointer"
                 >
                     {isOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
             </div>
 
-            {/* Mobile Slide-out Menu */}
             {isOpen && (
                 <div
-                    className="md:hidden fixed inset-0 z-50 flex"
+                    className="md:hidden fixed inset-0 z-[100] flex"
                     id="mobile-menu"
-                    role="dialog"
-                    aria-modal="true"
-                    aria-label="Navigation menu"
                 >
-                    {/* Backdrop */}
                     <div
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        className="absolute inset-0 bg-white/60 backdrop-blur-md"
                         onClick={() => setIsOpen(false)}
                     />
 
-                    {/* Menu Panel */}
                     <div
-                        className="relative ml-auto w-72 h-full glass border-l border-brand-green-light/20
+                        className="relative ml-auto w-72 h-full glass border-l border-brand-green-light/10
                        shadow-2xl flex flex-col p-6 gap-6 animate-slide-in"
                     >
-                        {/* Header */}
                         <div className="flex items-center justify-between">
-                            <span className="text-brand-white font-bold text-lg tracking-tight">
-                                Carbon<span className="text-brand-green-light">X</span>
-                            </span>
+                            <div className="flex items-center gap-2">
+                                <Image src="/logo.png" alt="CarbonX Logo" width={24} height={24} />
+                                <span className="text-brand-green-dark font-bold text-lg tracking-tight">
+                                    Carbon<span className="text-brand-green-light">X</span>
+                                </span>
+                            </div>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                aria-label="Close menu"
                                 className="w-8 h-8 flex items-center justify-center rounded-lg
-                           text-brand-white/60 hover:text-brand-white hover:bg-white/10
-                           transition-colors cursor-pointer"
+                           text-brand-green-dark/40 hover:text-brand-green-dark transition-colors cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
                         </div>
 
-                        {/* Nav Links */}
                         <nav>
                             <ul className="flex flex-col gap-1" role="list">
                                 {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -170,10 +153,10 @@ function MobileNav({ pathname }: { pathname: string }) {
                                                 href={href}
                                                 id={`mobile-nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
                                                 className={cn(
-                                                    'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200',
+                                                    'flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200',
                                                     isActive
-                                                        ? 'bg-brand-green-light/20 text-brand-green-light border border-brand-green-light/30'
-                                                        : 'text-brand-white/70 hover:text-brand-white hover:bg-white/5'
+                                                        ? 'bg-brand-green-light text-white shadow-lg'
+                                                        : 'text-brand-green-dark/70 hover:bg-brand-green-light/5'
                                                 )}
                                             >
                                                 <Icon size={20} />
@@ -185,10 +168,9 @@ function MobileNav({ pathname }: { pathname: string }) {
                             </ul>
                         </nav>
 
-                        {/* Footer status */}
-                        <div className="mt-auto flex items-center gap-2 text-xs text-brand-white/50 px-1">
+                        <div className="mt-auto flex items-center gap-2 text-xs text-brand-green-dark/40 px-1 font-medium">
                             <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
-                            RX Gateway · System Online
+                            Connected to RX Gateway
                         </div>
                     </div>
                 </div>
@@ -197,7 +179,6 @@ function MobileNav({ pathname }: { pathname: string }) {
     );
 }
 
-// ─── Main Navigation export ────────────────────────────────────────────────
 export function AppNavigation() {
     const pathname = usePathname();
     return (
