@@ -37,6 +37,11 @@ export default function EnergyMonitorPage() {
     const lossKw = rxKwh - totalKw;
     const lossPercent = (lossKw / rxKwh) * 100;
 
+    const livePF = 0.94 + (Math.random() * 0.04);
+    const liveVoltage = 398 + (Math.random() * 6);
+    const loadFactor = 0.82 + (Math.random() * 0.06);
+    const reactivePower = 11.5 + (Math.random() * 2);
+
     const phaseData = [
         { phase: 'L1', voltage: 231 + Math.random() * 2, current: 85 + Math.random() * 5 },
         { phase: 'L2', voltage: 229 + Math.random() * 2, current: 82 + Math.random() * 5 },
@@ -82,7 +87,7 @@ export default function EnergyMonitorPage() {
 
                 <Card className="glass-card theme-peach border-none p-6 shine-hover">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Power Factor</div>
-                    <div className="text-3xl font-black text-orange-950">0.96 <span className="text-lg opacity-40">Lag</span></div>
+                    <div className="text-3xl font-black text-orange-950">{livePF.toFixed(2)} <span className="text-lg opacity-40">Lag</span></div>
                     <div className="mt-4 flex items-center gap-2 text-orange-700/60 font-bold text-[10px] uppercase">
                         <Cpu size={12} /> Highly Efficient
                     </div>
@@ -90,7 +95,7 @@ export default function EnergyMonitorPage() {
 
                 <Card className="glass-card theme-yellow border-none p-6 shine-hover">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Average Voltage</div>
-                    <div className="text-3xl font-black text-yellow-950">401 <span className="text-lg opacity-40">V</span></div>
+                    <div className="text-3xl font-black text-yellow-950">{liveVoltage.toFixed(0)} <span className="text-lg opacity-40">V</span></div>
                     <div className="mt-4 flex items-center gap-2 text-yellow-700/60 font-bold text-[10px] uppercase">
                         <ShieldAlert size={12} /> Within Safe Limits
                     </div>
@@ -143,7 +148,7 @@ export default function EnergyMonitorPage() {
                     <Card className="glass-card theme-blue p-8 border-none flex flex-col items-center text-center">
                         <Gauge className="text-blue-700 mb-4" size={40} />
                         <h3 className="text-lg font-black text-blue-900 uppercase tracking-widest">Load Factor</h3>
-                        <div className="text-5xl font-black text-blue-950 my-2">0.84</div>
+                        <div className="text-5xl font-black text-blue-950 my-2">{loadFactor.toFixed(2)}</div>
                         <p className="text-[10px] font-black opacity-40 text-blue-900 leading-tight uppercase px-4">
                             Ideal load factor maintained to prevent equipment heat-stress.
                         </p>
@@ -152,7 +157,7 @@ export default function EnergyMonitorPage() {
                     <Card className="glass-card theme-peach p-8 border-none flex flex-col items-center text-center">
                         <Waves className="text-orange-700 mb-4" size={40} />
                         <h3 className="text-lg font-black text-orange-900 uppercase tracking-widest">Reactive Power</h3>
-                        <div className="text-5xl font-black text-orange-950 my-2">12.4</div>
+                        <div className="text-5xl font-black text-orange-950 my-2">{reactivePower.toFixed(1)}</div>
                         <div className="text-[10px] font-black opacity-40 text-orange-900 uppercase tracking-widest">kVAR per Unit</div>
                     </Card>
                 </div>

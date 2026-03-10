@@ -49,7 +49,10 @@ export default function CarbonAnalyticsPage() {
     // Derived Real-time Values
     const totalKwh = config.nodes.reduce((acc, n) => acc + (n.targetKw * 0.8), 0) * (1 + (Math.random() - 0.5) * 0.1);
     const co2Kg = kwhToCo2Kg(totalKwh);
-    const treesNeeded = (co2Kg * 365) / CO2_PER_TREE_YEAR; // Yearly footprint basis
+    const treesNeeded = (co2Kg * 365) / CO2_PER_TREE_YEAR;
+
+    // Dynamic progress based on targetKw vs current output (simple simulation)
+    const neutralityProgress = Math.min(Math.max(65 + (Math.random() * 5), 0), 100);
 
     const zoneData = [
         { name: 'Zone-A', value: config.nodes.filter(n => n.zone === 'Zone-A').reduce((acc, n) => acc + n.targetKw, 0) },
@@ -120,8 +123,8 @@ export default function CarbonAnalyticsPage() {
                             <Badge variant="outline" className="bg-blue-100/50 border-blue-200 text-blue-700 font-black text-[10px]">GOAL</Badge>
                         </div>
                         <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Neutrality Progress</div>
-                        <div className="text-4xl font-black text-blue-950">68 <span className="text-lg opacity-40">%</span></div>
-                        <Progress value={68} className="h-2 mt-6 bg-blue-950/10" />
+                        <div className="text-4xl font-black text-blue-950">{neutralityProgress.toFixed(1)} <span className="text-lg opacity-40">%</span></div>
+                        <Progress value={neutralityProgress} className="h-2 mt-6 bg-blue-950/10" />
                         <div className="mt-4 text-[10px] font-black text-blue-800/60 flex justify-between uppercase">
                             <span>Current</span>
                             <span>Target: 100%</span>
