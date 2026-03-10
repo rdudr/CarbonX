@@ -44,11 +44,11 @@ function DesktopNav({ pathname }: { pathname: string }) {
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-8 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
+            className="hidden md:flex items-center justify-between px-8 py-1 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
-                <Image src="/logo.png" alt="CarbonX Logo" width={90} height={32} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
+                <Image src="/logo.png" alt="CarbonX Logo" width={80} height={28} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
             </Link>
 
             {/* Nav Links */}

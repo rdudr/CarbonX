@@ -30,7 +30,7 @@ export default function LoginPage() {
             <div className="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-green-light/10 blur-[150px] rounded-full pointer-events-none" />
             <div className="fixed bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-brand-yellow/5 blur-[180px] rounded-full pointer-events-none" />
 
-            <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div className="max-w-5xl w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
 
                 {/* Visual Branding Section */}
                 <div className="space-y-8 text-center lg:text-left">

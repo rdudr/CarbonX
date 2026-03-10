@@ -15,7 +15,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'CarbonX | AI Industrial IoT Platform',
+  title: {
+    default: 'CarbonX | AI Industrial IoT Platform',
+    template: '%s | CarbonX',
+  },
   description:
     'CarbonX — AI-Driven Industrial IoT Platform for real-time energy monitoring, carbon footprint tracking, and machine health analysis using RX/TX architecture.',
   keywords: ['energy monitoring', 'industrial IoT', 'carbon footprint', 'machine health', 'AI', 'CarbonX'],
