@@ -44,8 +44,8 @@ function ProcessArchitecture() {
       <div className="absolute inset-0 blueprint-bg opacity-30 -z-10" />
 
       <div className="text-center mb-20 space-y-4">
-        <h2 className="text-4xl md:text-6xl font-black text-brand-green-dark tracking-tighter uppercase italic line-through decoration-brand-green-light decoration-4">
-          The CarbonX <span className="no-underline">Stack</span>
+        <h2 className="text-4xl md:text-6xl font-black text-brand-green-dark tracking-tighter uppercase italic">
+          The CarbonX <span className="text-brand-green-light">Stack</span>
         </h2>
         <p className="text-brand-green-dark/40 font-bold uppercase tracking-widest text-[10px]">End-to-end industrial intelligence architecture</p>
       </div>
@@ -153,6 +153,14 @@ function TechnicalHighlights() {
 
 function HeroSection() {
   const { isAuthenticated } = useAuth();
+  const [activeModel, setActiveModel] = useState<'platform' | 'hardware' | 'analytics'>('platform');
+
+  const models = {
+    platform: { title: "App Launcher", icon: Globe, detail: "Cloud Control" },
+    hardware: { title: "Core Node", icon: Box, detail: "Edge Sensor" },
+    analytics: { title: "Data Forensics", icon: Activity, detail: "AI Engine" }
+  };
+
   return (
     <div className="min-h-[90vh] flex flex-col items-center justify-center relative py-12 px-4 overflow-hidden">
       {/* Refined Industrial Background */}
@@ -170,7 +178,7 @@ function HeroSection() {
             <div className="p-2 bg-brand-green-light rounded-full">
               <Zap size={16} className="text-white" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green-dark/60">v4.0 Protocol Active</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green-dark/60">System Ready • v4.0</span>
           </motion.div>
 
           <div className="space-y-6">
@@ -180,8 +188,8 @@ function HeroSection() {
               transition={{ delay: 0.2, duration: 0.8 }}
               className="text-7xl md:text-9xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.8] text-glow"
             >
-              Industry <br />
-              <span className="text-brand-green-light underline decoration-[12px] underline-offset-[12px]">Forensics</span>
+              Industrial <br />
+              <span className="text-brand-green-light underline decoration-[12px] underline-offset-[12px]">Intelligence</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
@@ -189,7 +197,7 @@ function HeroSection() {
               transition={{ delay: 0.5 }}
               className="text-xl md:text-2xl text-brand-green-dark/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Real-time energy telemetry and AI machine diagnostics for the next generation of industrial efficiency.
+              Monitor every watt, detect every anomaly, and optimize your entire plant with one unified AI dashboard.
             </motion.p>
           </div>
 
@@ -205,19 +213,19 @@ function HeroSection() {
                 <ArrowRight className="group-hover:translate-x-3 transition-transform" />
               </Button>
             </Link>
-            <Button variant="ghost" className="h-20 px-8 rounded-full text-brand-green-dark/40 font-black uppercase italic tracking-widest hover:text-brand-green-dark hover:bg-brand-green-light/5 gap-3">
-              <Globe size={18} />
-              Global Scale
-            </Button>
           </motion.div>
         </div>
 
-        {/* 3D Product Model Placeholder with better Framing */}
-        <div className="relative h-[600px] flex items-center justify-center group">
+        {/* 3D Product Model Showcase with Switcher */}
+        <div className="relative h-[650px] flex flex-col items-center justify-center gap-10 group">
           <div className="absolute inset-0 bg-brand-green-light/5 blur-[100px] rounded-full scale-75 animate-pulse" />
+
           <motion.div
-            animate={{ y: [0, -30, 0], rotate: [0, 2, 0, -2, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            key={activeModel}
+            initial={{ opacity: 0, x: 50, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -50, scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 100 }}
             className="w-full max-w-lg aspect-square glass-thick md:rounded-[80px] rounded-[50px] border border-white flex items-center justify-center relative shadow-inner overflow-hidden"
           >
             <div className="absolute inset-0 dot-pattern opacity-20" />
@@ -226,16 +234,33 @@ function HeroSection() {
             </div>
 
             <div className="flex flex-col items-center gap-8 relative z-10 text-brand-green-dark/10">
-              <Box size={160} className="animate-float" />
+              {React.createElement(models[activeModel].icon, { size: 160, className: "animate-float text-brand-green-dark/20" })}
               <div className="flex flex-col items-center gap-2">
-                <div className="text-[10px] font-black uppercase tracking-[0.5em] opacity-40">Industrial Node</div>
+                <div className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-green-dark/40">{models[activeModel].title}</div>
                 <div className="h-1 w-20 bg-brand-green-light/20 rounded-full" />
               </div>
             </div>
 
-            {/* Corner Decorative Lines */}
             <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-brand-green-light/10 rounded-br-[80px]" />
           </motion.div>
+
+          {/* Model Switcher Tabs */}
+          <div className="flex gap-4 p-2 bg-black/5 rounded-3xl border border-black/5 relative z-20 backdrop-blur-md">
+            {(['platform', 'hardware', 'analytics'] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => setActiveModel(m)}
+                className={cn(
+                  "px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all transform active:scale-95",
+                  activeModel === m
+                    ? "bg-brand-green-dark text-white shadow-xl shadow-brand-green-dark/20"
+                    : "text-brand-green-dark/40 hover:text-brand-green-dark hover:bg-white/50"
+                )}
+              >
+                {models[m].detail}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

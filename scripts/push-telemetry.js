@@ -11,7 +11,22 @@
  */
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
+const fs = require('fs');
+const path = require('path');
+
+const keyPath = path.join(__dirname, 'serviceAccountKey.json');
+
+if (!fs.existsSync(keyPath)) {
+    console.error('\x1b[31m%s\x1b[0m', 'CRITICAL ERROR: serviceAccountKey.json is missing!');
+    console.log('\n\x1b[36m%s\x1b[0m', 'INSTRUCTIONS:');
+    console.log('1. Go to Firebase Console -> Project Settings -> Service Accounts');
+    console.log('2. Click "Generate new private key"');
+    console.log(`3. Save the downloaded JSON as 'serviceAccountKey.json' in: ${__dirname}`);
+    console.log('4. Run this script again.\n');
+    process.exit(1);
+}
+
+const serviceAccount = require(keyPath);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
