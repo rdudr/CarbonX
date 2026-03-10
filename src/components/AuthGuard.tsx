@@ -44,8 +44,10 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
         );
     }
 
+    const isPublicPath = ['/login', '/'].includes(pathname);
+
     // Don't render content if we are about to redirect
-    if (!isAuthenticated && pathname !== '/login') return null;
+    if (!isAuthenticated && !isPublicPath) return null;
     if (isAuthenticated && requiredRole && role !== 'ADMIN' && role !== requiredRole) return null;
 
     return <>{children}</>;
