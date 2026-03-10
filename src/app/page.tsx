@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Activity, Zap, Leaf, Factory, ArrowRight, Globe, Box, HardHat,
   Cpu, Shield, Layers, BarChart3, Database, Workflow, ShieldCheck
