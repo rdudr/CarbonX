@@ -1,12 +1,15 @@
 {
-  "name": "carbon-x",
-  "version": "0.1.0",
+  "name": "carbonx",
+  "version": "1.0.0",
+  "description": "CarbonX — AI-Driven Industrial IoT Platform for energy monitoring, carbon footprint tracking, and machine health.",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
@@ -31,6 +34,8 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,0 +1,46 @@
+{
+    "name": "CarbonX — AI Industrial IoT Platform",
+    "short_name": "CarbonX",
+    "description": "Real-time energy monitoring, carbon footprint tracking, and AI machine health analysis.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#111b11",
+    "theme_color": "#25671E",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": [
+        "productivity",
+        "utilities",
+        "business"
+    ],
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "description": "Go to CarbonX main dashboard",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/icons/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "screenshots": []
+}
