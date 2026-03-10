@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import {
     Settings as SettingsIcon, Shield, Bell, Zap, Cpu,
-    CheckCircle2, Plus, Trash2, Edit2, ArrowRight
+    CheckCircle2, Plus, Trash2, Edit2, ArrowRight, X
 } from 'lucide-react';
 import { useSystem, DeviceSpec, TXUnit } from '@/context/SystemContext';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,7 +20,52 @@ export default function SettingsPage() {
     
     // States for interaction
     const [saved, setSaved] = useState(false);
-    const [editingDevice, setEditingDevice] = useState<{txId: string, deviceId: string} | null>(null);
+    
+    // TX Wizard State
+    const [isWizardOpen, setIsWizardOpen] = useState(false);
+    const [wizardPhase, setWizardPhase] = useState<'single' | 'three'>('three');
+    const [wizardTxName, setWizardTxName] = useState('New Transmitter');
+    const [wizardDevices, setWizardDevices] = useState<Partial<DeviceSpec>[]>([{ name: 'Main Equipment', power: 1000, current: 5, phaseType: 'three' }]);
+
+    const openWizard = () => {
+        setWizardPhase('three');
+        setWizardTxName(`TX-${config.txUnits.length + 1}`);
+        setWizardDevices([{ name: 'Main Equipment', power: 1000, current: 5, phaseType: 'three' }]);
+        setIsWizardOpen(true);
+    };
+
+    const handleWizardPhaseChange = (phase: 'single' | 'three') => {
+        setWizardPhase(phase);
+        if (phase === 'single') {
+            setWizardDevices([
+                { name: 'Line 1 Device', power: 1000, current: 5, phaseType: 'single' },
+                { name: 'Line 2 Device', power: 1000, current: 5, phaseType: 'single' },
+                { name: 'Line 3 Device', power: 1000, current: 5, phaseType: 'single' }
+            ]);
+        } else {
+            setWizardDevices([{ name: 'Main Equipment', power: 1000, current: 5, phaseType: 'three' }]);
+        }
+    };
+
+    const handleWizardDeviceChange = (index: number, field: string, value: any) => {
+        const newDevices = [...wizardDevices];
+        newDevices[index] = { ...newDevices[index], [field]: value };
+        setWizardDevices(newDevices);
+    };
+
+    const saveWizardTX = () => {
+        const newId = `TX-${config.txUnits.length + 1}`;
+        const finalDevices: DeviceSpec[] = wizardDevices.map((d, i) => ({
+            id: `D-${Math.floor(Math.random() * 10000) + i}`,
+            name: d.name || `Device ${i+1}`,
+            phaseType: d.phaseType as 'single' | 'three',
+            power: d.power || 0,
+            current: d.current || 0
+        }));
+        
+        addTXUnit({ id: newId, name: wizardTxName, devices: finalDevices });
+        setIsWizardOpen(false);
+    };
 
     const handleSave = () => {
         setSaved(true);
@@ -150,10 +195,7 @@ export default function SettingsPage() {
                             Transmitters & Devices
                         </h2>
                         <Button 
-                            onClick={() => {
-                                const newId = `TX-${config.txUnits.length + 1}`;
-                                addTXUnit({ id: newId, name: `New Transmitter (${newId})`, devices: [] });
-                            }}
+                            onClick={openWizard}
                             className="bg-brand-green-dark hover:bg-brand-green-light text-white rounded-full font-bold px-6"
                         >
                             <Plus size={16} className="mr-2" /> Add TX Unit
@@ -274,6 +316,104 @@ export default function SettingsPage() {
                 </div>
 
             </div>
+
+            {/* TX Addition Wizard Modal */}
+            {isWizardOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="glass-thick bg-white/95 md:rounded-[40px] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-white p-8 animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-3xl font-black text-brand-green-dark tracking-tight">Add TX Unit</h2>
+                                <p className="text-sm font-bold text-brand-green-dark/50">Setup connection topology and specific equipment limits.</p>
+                            </div>
+                            <Button variant="ghost" size="icon" onClick={() => setIsWizardOpen(false)} className="rounded-full hover:bg-black/5">
+                                <X size={24} className="text-brand-green-dark" />
+                            </Button>
+                        </div>
+                        
+                        <div className="space-y-6">
+                            <div>
+                                <label className="text-[10px] font-black opacity-40 uppercase tracking-widest block text-brand-green-dark mb-2">Transmitter Name / Zone</label>
+                                <Input 
+                                    value={wizardTxName}
+                                    onChange={(e) => setWizardTxName(e.target.value)}
+                                    className="bg-white/50 border-black/10 rounded-xl font-bold text-lg text-brand-green-dark" 
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-[10px] font-black opacity-40 uppercase tracking-widest block text-brand-green-dark mb-2">Network Phase Topology</label>
+                                <div className="flex gap-4">
+                                    <Button 
+                                        variant="outline"
+                                        onClick={() => handleWizardPhaseChange('three')}
+                                        className={`flex-1 h-14 rounded-2xl font-black tracking-widest text-xs uppercase ${wizardPhase === 'three' ? 'bg-orange-500 text-white border-transparent shadow-lg shadow-orange-500/30 hover:bg-orange-600 hover:text-white' : 'bg-white/50 text-brand-green-dark/40 border-black/5 hover:bg-white'} transition-all`}
+                                    >
+                                        Three Phase (3&Phi;)
+                                    </Button>
+                                    <Button 
+                                        variant="outline"
+                                        onClick={() => handleWizardPhaseChange('single')}
+                                        className={`flex-1 h-14 rounded-2xl font-black tracking-widest text-xs uppercase ${wizardPhase === 'single' ? 'bg-blue-500 text-white border-transparent shadow-lg shadow-blue-500/30 hover:bg-blue-600 hover:text-white' : 'bg-white/50 text-brand-green-dark/40 border-black/5 hover:bg-white'} transition-all`}
+                                    >
+                                        Single Phase (1&Phi;)
+                                    </Button>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-brand-green-dark/5 p-6 rounded-3xl border border-black/5 space-y-4">
+                                <div className="text-[10px] font-black opacity-40 uppercase tracking-widest text-brand-green-dark border-b border-black/5 pb-2">
+                                    {wizardPhase === 'single' ? 'Connected Devices (3 Lines)' : 'Connected Equipment (Main Line)'}
+                                </div>
+                                {wizardDevices.map((dev, i) => (
+                                    <div key={i} className="bg-white/70 p-4 rounded-2xl border border-white/50 shadow-sm flex flex-col gap-3">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <Zap size={14} className={wizardPhase === 'three' ? 'text-orange-500' : 'text-blue-500'} />
+                                            <span className="text-[10px] font-black opacity-50 uppercase tracking-widest">Device {i+1}</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div className="md:col-span-2">
+                                                <label className="text-[9px] font-black opacity-40 uppercase block mb-1">Device Name</label>
+                                                <Input 
+                                                    value={dev.name} 
+                                                    onChange={e => handleWizardDeviceChange(i, 'name', e.target.value)}
+                                                    className="bg-transparent border-black/10 rounded-lg font-bold text-sm text-brand-green-dark focus-visible:ring-brand-green-light"
+                                                    placeholder="e.g. CNC Machine"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] font-black opacity-40 uppercase block mb-1">Power Rating (Watts)</label>
+                                                <Input 
+                                                    type="number"
+                                                    value={dev.power} 
+                                                    onChange={e => handleWizardDeviceChange(i, 'power', Number(e.target.value))}
+                                                    className="bg-transparent border-black/10 rounded-lg font-bold text-sm text-brand-green-dark focus-visible:ring-brand-green-light"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] font-black opacity-40 uppercase block mb-1">Max Current (Amps)</label>
+                                                <Input 
+                                                    type="number"
+                                                    value={dev.current} 
+                                                    onChange={e => handleWizardDeviceChange(i, 'current', Number(e.target.value))}
+                                                    className="bg-transparent border-black/10 rounded-lg font-bold text-sm text-brand-green-dark focus-visible:ring-brand-green-light"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-black/5">
+                            <Button variant="ghost" onClick={() => setIsWizardOpen(false)} className="rounded-xl font-bold text-brand-green-dark/40 hover:text-brand-green-dark hover:bg-black/5">Cancel</Button>
+                            <Button onClick={saveWizardTX} className="rounded-xl font-bold bg-brand-green-dark text-white hover:bg-brand-green-light px-8 py-6 shadow-lg shadow-brand-green-dark/20 text-md">
+                                Confirm & Add
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
