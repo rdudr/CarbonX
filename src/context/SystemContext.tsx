@@ -42,7 +42,13 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
         const saved = localStorage.getItem('carbonx_config');
         if (saved) {
             try {
-                setConfig(JSON.parse(saved));
+                const parsed = JSON.parse(saved);
+                // Migration: Ensure all nodes have a zone if they come from an older version
+                const migratedNodes = parsed.nodes.map((n: any) => ({
+                    ...n,
+                    zone: n.zone || 'Zone-A' // Default to Zone-A for old data
+                }));
+                setConfig({ ...parsed, nodes: migratedNodes });
             } catch (e) {
                 console.error('Failed to load config', e);
             }

@@ -71,8 +71,8 @@ export default function MachinesPage() {
 
                 <div className="mt-6 md:mt-0 flex gap-4 relative z-10">
                     <div className="glass bg-brand-green-light/10 border-brand-green-light/20 px-6 py-3 rounded-2xl">
-                        <div className="text-[10px] font-black opacity-40 uppercase tracking-widest text-brand-green-dark">Active Machines</div>
-                        <div className="text-2xl font-black text-brand-green-dark">{filteredMachines.length} <span className="text-sm opacity-40">Online</span></div>
+                        <div className="text-[10px] font-black opacity-40 uppercase tracking-widest text-brand-green-dark">Operational Machines</div>
+                        <div className="text-2xl font-black text-brand-green-dark">{filteredMachines.length} / {machines.length} <span className="text-sm opacity-40">Online</span></div>
                     </div>
                 </div>
 
