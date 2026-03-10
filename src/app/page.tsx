@@ -20,47 +20,47 @@ import { useEnergyNotifications } from '@/hooks/useEnergyNotifications';
 import { calculateEnergyLoss, calculateMachineHealth, kwhToCo2Kg, getStatusColor } from '@/lib/energyCalculations';
 import { debounce } from '@/lib/debounce';
 import { cn } from '@/lib/utils';
-import type { RXEnergyUnit } from '@/types/energy';
+import { useSystem } from '@/context/SystemContext';
+import type { RXEnergyUnit, TXEnergyUnit } from '@/types/energy';
 
 const COLORS = ['#10b981', '#fb923c', '#3b82f6', '#facc15'];
 
-function generateMockGateway(tick: number): RXEnergyUnit {
+function generateMockGateway(tick: number, nodeConfigs: any[]): RXEnergyUnit {
   const jitter = () => (Math.random() - 0.5) * 2;
+  const txNodes: TXEnergyUnit[] = nodeConfigs.map(config => {
+    const baseKwh = (config.id === 'TX-1') ? 600 : (config.id === 'TX-2') ? 480 : (config.id === 'TX-3') ? 820 : 420;
+    const currentKw = (config.id === 'TX-1') ? 12.4 : (config.id === 'TX-2') ? 8.2 : (config.id === 'TX-3') ? 45.1 : 64.8;
+
+    const isThreePhase = config.phaseType === 'three';
+    const phaseVoltages: [number, number, number] = isThreePhase ? [400 + jitter(), 402 + jitter(), 398 + jitter()] : [230 + jitter(), 0, 0];
+    const phaseCurrents: [number, number, number] = isThreePhase ? [18 + jitter(), 17 + jitter(), 19 + jitter()] : [25 + jitter(), 0, 0];
+
+    return {
+      nodeId: config.id,
+      name: config.name,
+      phaseType: config.phaseType,
+      targetKw: config.targetKw,
+      kwh: baseKwh + jitter() * 10,
+      kvarh: 180 + jitter() * 5,
+      currentKw: currentKw + jitter(),
+      phaseVoltages,
+      phaseCurrents,
+      powerFactor: 0.92 + jitter() * 0.05,
+      temperature: 60 + jitter() * 5,
+      timestamp: new Date().toISOString(),
+    };
+  });
+
   return {
     gatewayId: 'RX-PLANT-01',
     name: 'Main Plant Gateway',
-    totalKwh: 2450 + jitter() * 20,
+    totalKwh: txNodes.reduce((acc, n) => acc + n.kwh, 0) * 1.05 + jitter() * 10, // Simulate a small line loss
     totalKvarh: 890 + jitter() * 10,
     voltage: 400 + jitter() * 5,
     current: 125 + jitter() * 3,
     powerFactor: 0.91 + jitter() * 0.03,
     timestamp: new Date().toISOString(),
-    txNodes: [
-      {
-        nodeId: 'TX-1', name: 'CNC Machine A',
-        kwh: 600 + jitter() * 10, kvarh: 180,
-        currentKw: 12.4 + jitter(), phaseVoltages: [399, 401, 400], phaseCurrents: [18, 19, 18],
-        powerFactor: 0.95, temperature: 62 + jitter() * 2, timestamp: new Date().toISOString(),
-      },
-      {
-        nodeId: 'TX-2', name: 'Lathe B',
-        kwh: 480 + jitter() * 8, kvarh: 140,
-        currentKw: 8.2 + jitter(), phaseVoltages: [398, 402, 400], phaseCurrents: [13, 13, 12],
-        powerFactor: 0.93, temperature: 55 + jitter() * 2, timestamp: new Date().toISOString(),
-      },
-      {
-        nodeId: 'TX-3', name: 'Compressor Array',
-        kwh: 820 + jitter() * 15 + (tick % 10 < 3 ? 200 : 0), kvarh: 310,
-        currentKw: 45.1 + jitter() * 2, phaseVoltages: [395, 405, 401], phaseCurrents: [68, 70, 67],
-        powerFactor: 0.82, temperature: 88 + jitter() * 3, timestamp: new Date().toISOString(),
-      },
-      {
-        nodeId: 'TX-4', name: 'HVAC System',
-        kwh: 420 + jitter() * 8, kvarh: 200,
-        currentKw: 64.8 + jitter() * 3, phaseVoltages: [390, 398, 395], phaseCurrents: [98, 100, 97],
-        powerFactor: 0.78, temperature: 95 + jitter() * 5, timestamp: new Date().toISOString(),
-      },
-    ],
+    txNodes,
   };
 }
 
@@ -78,6 +78,7 @@ export default function DashboardPage() {
   const [gateway, setGateway] = useState<RXEnergyUnit | null>(null);
   const [tick, setTick] = useState(0);
   const { addNotification } = useEnergyNotifications();
+  const { config } = useSystem();
 
   const debouncedLossCheck = useRef(
     debounce((gw: RXEnergyUnit) => {
@@ -100,7 +101,7 @@ export default function DashboardPage() {
     if (!mounted) return;
     const poll = () => {
       setTick((t) => {
-        const newGateway = generateMockGateway(t);
+        const newGateway = generateMockGateway(t, config.nodes);
         setGateway(newGateway);
         debouncedLossCheck(newGateway);
         return t + 1;
@@ -109,9 +110,9 @@ export default function DashboardPage() {
     poll();
     const interval = setInterval(poll, 5000);
     return () => clearInterval(interval);
-  }, [mounted, debouncedLossCheck]);
+  }, [mounted, debouncedLossCheck, config.nodes]);
 
-  if (!mounted || !gateway) return <div className="p-20 text-center">Loading CarbonX...</div>;
+  if (!mounted || !gateway) return <div className="p-20 text-center">Loading CarbonX Dashboard...</div>;
 
   const lossResult = calculateEnergyLoss(gateway);
   const totalCo2 = kwhToCo2Kg(gateway.totalKwh);
@@ -154,7 +155,7 @@ export default function DashboardPage() {
             </div>
             <div className="text-xs font-black text-emerald-900/40 uppercase mb-1">RX Energy</div>
             <div className="text-3xl font-black text-emerald-900">{gateway.totalKwh.toFixed(0)} <span className="text-lg opacity-40">kWh</span></div>
-            <div className="text-[10px] font-black text-emerald-700/50 mt-4 bg-white/30 px-2 py-1 rounded-full w-fit">Real-time</div>
+            <div className="text-[10px] font-black text-emerald-700/50 mt-4 bg-white/30 px-2 py-1 rounded-full w-fit">Reading RX</div>
           </CardContent>
         </Card>
 
@@ -166,9 +167,9 @@ export default function DashboardPage() {
               </div>
               <Activity className="text-orange-700/40" size={18} />
             </div>
-            <div className="text-xs font-black text-orange-900/40 uppercase mb-1">CO2 Emissions</div>
+            <div className="text-xs font-black text-orange-900/40 uppercase mb-1">CO2 Footprint</div>
             <div className="text-3xl font-black text-orange-900">{totalCo2.toFixed(0)} <span className="text-lg opacity-40">kg</span></div>
-            <div className="text-[10px] font-black text-orange-700/50 mt-4 bg-white/30 px-2 py-1 rounded-full w-fit">Environmental</div>
+            <div className="text-[10px] font-black text-orange-700/50 mt-4 bg-white/30 px-2 py-1 rounded-full w-fit">Live Tracking</div>
           </CardContent>
         </Card>
 
@@ -180,7 +181,7 @@ export default function DashboardPage() {
               </div>
               <Download className="text-blue-700/40" size={18} />
             </div>
-            <div className="text-xs font-black text-blue-900/40 uppercase mb-1">Plant Health</div>
+            <div className="text-xs font-black text-blue-900/40 uppercase mb-1">Plant Stability</div>
             <div className="text-3xl font-black text-blue-900">92 <span className="text-lg opacity-40">/100</span></div>
             <Progress value={92} className="h-1.5 mt-5 bg-blue-900/10" />
           </CardContent>
@@ -194,9 +195,9 @@ export default function DashboardPage() {
               </div>
               <ArrowDownRight className="text-yellow-700/40" size={18} />
             </div>
-            <div className="text-xs font-black text-yellow-900/40 uppercase mb-1">Loss %</div>
+            <div className="text-xs font-black text-yellow-900/40 uppercase mb-1">Loss Status</div>
             <div className="text-3xl font-black text-yellow-900">{lossResult.lossPercent.toFixed(1)} <span className="text-lg opacity-40">%</span></div>
-            <div className="text-[10px] font-black text-yellow-700 mt-4">{lossResult.lossKwh.toFixed(1)} kWh unmonitored</div>
+            <div className="text-[10px] font-black text-yellow-700 mt-4">Threshold: {config.lossThreshold}%</div>
           </CardContent>
         </Card>
       </div>
@@ -222,7 +223,7 @@ export default function DashboardPage() {
 
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="text-brand-green-dark text-lg font-bold">Node Distribution</CardTitle>
+            <CardTitle className="text-brand-green-dark text-lg font-bold">Node Energy Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="h-[280px] flex items-center">
             <ResponsiveContainer width="55%" height="100%">
@@ -256,24 +257,26 @@ export default function DashboardPage() {
                 <div className="flex justify-between items-center mb-4">
                   <div>
                     <div className="text-lg font-black text-brand-green-dark">{node.nodeId}</div>
-                    <div className="text-[10px] uppercase font-bold text-brand-green-dark/40">{node.name}</div>
+                    <Badge variant="outline" className="text-[8px] h-4 bg-white/20 border-white/40 uppercase">
+                      {node.phaseType} Phase
+                    </Badge>
                   </div>
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between text-[10px] font-black">
-                    <span className="text-brand-green-dark/60">HEALTH</span>
+                    <span className="text-brand-green-dark/60">AI HEALTH</span>
                     <span style={{ color }}>{health.score}%</span>
                   </div>
                   <Progress value={health.score} className="h-1 bg-black/5" />
                   <div className="grid grid-cols-2 gap-2 text-[10px] font-black">
                     <div className="bg-white/30 p-2 rounded-lg">
-                      <div className="opacity-40">POWER</div>
+                      <div className="opacity-40">LOAD</div>
                       <div>{node.currentKw.toFixed(1)} kW</div>
                     </div>
                     <div className="bg-white/30 p-2 rounded-lg">
-                      <div className="opacity-40">TEMP</div>
-                      <div>{node.temperature.toFixed(0)}°C</div>
+                      <div className="opacity-40">LIMIT</div>
+                      <div>{node.targetKw} kW</div>
                     </div>
                   </div>
                 </div>

@@ -30,8 +30,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-6 py-2
-                 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
+            className="hidden md:flex items-center justify-between px-6 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
@@ -91,8 +90,7 @@ function MobileNav({ pathname }: { pathname: string }) {
         <>
             <div
                 id="mobile-topbar"
-                className="md:hidden flex items-center justify-between px-4 py-2
-                   glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
+                className="md:hidden flex items-center justify-between px-4 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
             >
                 <Link href="/" className="flex items-center gap-2">
                     <Image src="/logo.png" alt="CarbonX Logo" width={28} height={28} />
@@ -105,9 +103,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                     id="hamburger-btn"
                     onClick={() => setIsOpen(!isOpen)}
                     aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg
-                     text-brand-green-dark/80 hover:bg-brand-green-light/10
-                     transition-all duration-200 cursor-pointer"
+                    className="w-9 h-9 flex items-center justify-center rounded-lg text-brand-green-dark/80 hover:bg-brand-green-light/10 transition-all duration-200 cursor-pointer"
                 >
                     {isOpen ? <X size={22} /> : <Menu size={22} />}
                 </button>
@@ -124,8 +120,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                     />
 
                     <div
-                        className="relative ml-auto w-72 h-full glass border-l border-brand-green-light/10
-                       shadow-2xl flex flex-col p-6 gap-6 animate-slide-in"
+                        className="relative ml-auto w-72 h-full glass border-l border-brand-green-light/10 shadow-2xl flex flex-col p-6 gap-6 animate-slide-in"
                     >
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">

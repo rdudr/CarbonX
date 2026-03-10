@@ -27,21 +27,27 @@ export interface RXEnergyUnit {
     txNodes: TXEnergyUnit[];
 }
 
+export type PhaseType = 'single' | 'three';
+
 /** Energy units transmitted from a TX (Node/Machine) level */
 export interface TXEnergyUnit {
     /** Unique node identifier (e.g. "TX-1") */
     nodeId: string;
     /** Human-readable machine name */
     name: string;
+    /** Phase type (Single or Three Phase) */
+    phaseType: PhaseType;
+    /** Targeted or rated power in kW for health comparison */
+    targetKw: number;
     /** Energy transmitted/consumed by this machine in kWh */
     kwh: number;
     /** Reactive energy in kVARh */
     kvarh: number;
     /** Current power draw in kW */
     currentKw: number;
-    /** Phase voltages [L1, L2, L3] in Volts */
+    /** Phase voltages [L1, L2, L3] in Volts. For single phase, L2 and L3 are 0 */
     phaseVoltages: [number, number, number];
-    /** Phase currents [L1, L2, L3] in Amperes */
+    /** Phase currents [L1, L2, L3] in Amperes. For single phase, L2 and L3 are 0 */
     phaseCurrents: [number, number, number];
     /** Power factor (0–1) */
     powerFactor: number;
