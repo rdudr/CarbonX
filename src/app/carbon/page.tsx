@@ -63,9 +63,9 @@ export default function CarbonAnalyticsPage() {
     return (
         <div className="fade-in space-y-8 pb-20">
             {/* Sustainability Header */}
-            <div className="glass p-8 rounded-4xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-emerald-500/10">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-emerald-500/10">
                 <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
+                    <div className="w-20 h-20 md:rounded-3xl rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shadow-inner">
                         <Leaf className="text-emerald-500" size={40} />
                     </div>
                     <div>
@@ -135,7 +135,7 @@ export default function CarbonAnalyticsPage() {
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card className="glass-card p-6 min-h-[400px]">
+                <Card className="glass-card p-6 min-h-[400px] md:rounded-[35px] rounded-3xl">
                     <CardHeader className="px-0 pt-0">
                         <CardTitle className="text-brand-green-dark font-black tracking-tight text-xl">Emission Intensity (24h)</CardTitle>
                     </CardHeader>
@@ -161,7 +161,7 @@ export default function CarbonAnalyticsPage() {
                     </CardContent>
                 </Card>
 
-                <Card className="glass-card p-6 min-h-[400px]">
+                <Card className="glass-card p-6 min-h-[400px] md:rounded-[35px] rounded-3xl">
                     <CardHeader className="px-0 pt-0">
                         <CardTitle className="text-brand-green-dark font-black tracking-tight text-xl">Contribution by Zone</CardTitle>
                     </CardHeader>
@@ -201,7 +201,7 @@ export default function CarbonAnalyticsPage() {
             </div>
 
             {/* AI Insights Bar */}
-            <div className="glass-card theme-yellow p-8 border-none flex flex-col md:flex-row items-center gap-8 shine-hover">
+            <div className="glass-card theme-yellow p-8 border-none flex flex-col md:flex-row items-center gap-8 shine-hover md:rounded-[35px] rounded-3xl">
                 <div className="w-16 h-16 rounded-2xl bg-white/40 flex items-center justify-center shrink-0">
                     <CheckCircle2 className="text-yellow-700" size={32} />
                 </div>

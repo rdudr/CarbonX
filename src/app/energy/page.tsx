@@ -51,9 +51,9 @@ export default function EnergyMonitorPage() {
     return (
         <div className="fade-in space-y-8 pb-20">
             {/* Energy Header */}
-            <div className="glass p-8 rounded-4xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-brand-green-light/10">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-brand-green-light/10">
                 <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-3xl bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner">
+                    <div className="w-20 h-20 md:rounded-3xl rounded-2xl bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner">
                         <Zap className="text-brand-green-light" size={40} />
                     </div>
                     <div>
@@ -71,7 +71,7 @@ export default function EnergyMonitorPage() {
 
             {/* Control Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="glass-card theme-mint border-none p-6 shine-hover">
+                <Card className="glass-card theme-mint border-none p-6 shine-hover md:rounded-[35px] rounded-3xl">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Total Plant Load</div>
                     <div className="text-3xl font-black text-emerald-950">{totalKw.toFixed(1)} <span className="text-lg opacity-40">kW</span></div>
                     <div className="mt-4 flex items-center gap-2 text-emerald-700/60 font-bold text-[10px] uppercase">
@@ -79,13 +79,13 @@ export default function EnergyMonitorPage() {
                     </div>
                 </Card>
 
-                <Card className="glass-card theme-blue border-none p-6 shine-hover">
+                <Card className="glass-card theme-blue border-none p-6 shine-hover md:rounded-[35px] rounded-3xl">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Transmission Loss</div>
                     <div className="text-3xl font-black text-blue-950">{lossPercent.toFixed(1)} <span className="text-lg opacity-40">%</span></div>
                     <Progress value={lossPercent} className="h-1.5 mt-4 bg-blue-950/10" />
                 </Card>
 
-                <Card className="glass-card theme-peach border-none p-6 shine-hover">
+                <Card className="glass-card theme-peach border-none p-6 shine-hover md:rounded-[35px] rounded-3xl">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Power Factor</div>
                     <div className="text-3xl font-black text-orange-950">{livePF.toFixed(2)} <span className="text-lg opacity-40">Lag</span></div>
                     <div className="mt-4 flex items-center gap-2 text-orange-700/60 font-bold text-[10px] uppercase">
@@ -93,7 +93,7 @@ export default function EnergyMonitorPage() {
                     </div>
                 </Card>
 
-                <Card className="glass-card theme-yellow border-none p-6 shine-hover">
+                <Card className="glass-card theme-yellow border-none p-6 shine-hover md:rounded-[35px] rounded-3xl">
                     <div className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-1">Average Voltage</div>
                     <div className="text-3xl font-black text-yellow-950">{liveVoltage.toFixed(0)} <span className="text-lg opacity-40">V</span></div>
                     <div className="mt-4 flex items-center gap-2 text-yellow-700/60 font-bold text-[10px] uppercase">
@@ -105,7 +105,7 @@ export default function EnergyMonitorPage() {
             {/* Analysis Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Phase Balancing Chart */}
-                <Card className="glass-card lg:col-span-2 p-8">
+                <Card className="glass-card lg:col-span-2 p-8 md:rounded-[40px] rounded-3xl">
                     <div className="flex justify-between items-center mb-10">
                         <h2 className="text-2xl font-black text-brand-green-dark tracking-tight">Phase Balancing (RX Gateway)</h2>
                         <div className="flex gap-2">
@@ -145,7 +145,7 @@ export default function EnergyMonitorPage() {
 
                 {/* Efficiency Stats */}
                 <div className="space-y-6">
-                    <Card className="glass-card theme-blue p-8 border-none flex flex-col items-center text-center">
+                    <Card className="glass-card theme-blue p-8 border-none flex flex-col items-center text-center md:rounded-[35px] rounded-3xl">
                         <Gauge className="text-blue-700 mb-4" size={40} />
                         <h3 className="text-lg font-black text-blue-900 uppercase tracking-widest">Load Factor</h3>
                         <div className="text-5xl font-black text-blue-950 my-2">{loadFactor.toFixed(2)}</div>
@@ -154,7 +154,7 @@ export default function EnergyMonitorPage() {
                         </p>
                     </Card>
 
-                    <Card className="glass-card theme-peach p-8 border-none flex flex-col items-center text-center">
+                    <Card className="glass-card theme-peach p-8 border-none flex flex-col items-center text-center md:rounded-[35px] rounded-3xl">
                         <Waves className="text-orange-700 mb-4" size={40} />
                         <h3 className="text-lg font-black text-orange-900 uppercase tracking-widest">Reactive Power</h3>
                         <div className="text-5xl font-black text-orange-950 my-2">{reactivePower.toFixed(1)}</div>
@@ -164,7 +164,7 @@ export default function EnergyMonitorPage() {
             </div>
 
             {/* Loss Alert Advisory */}
-            <div className="glass p-8 rounded-4xl border-2 border-dashed border-brand-green-light/20 flex gap-8 items-center bg-brand-green-light/[0.02]">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl border-2 border-dashed border-brand-green-light/20 flex gap-8 items-center bg-brand-green-light/[0.02]">
                 <div className="w-14 h-14 rounded-2xl bg-white/80 border border-brand-green-light/20 flex items-center justify-center text-brand-green-dark shadow-sm shrink-0">
                     <Info size={32} />
                 </div>

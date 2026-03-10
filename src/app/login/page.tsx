@@ -60,8 +60,8 @@ export default function LoginPage() {
                 </div>
 
                 {/* Login Role Selection Card */}
-                <Card className="glass p-1 rounded-[40px] border-brand-green-light/10 shadow-2xl overflow-hidden group shadow-brand-green-light/5">
-                    <div className="bg-white/80 backdrop-blur-xl p-10 rounded-[38px] space-y-8">
+                <Card className="glass p-1 md:rounded-[40px] rounded-3xl border-brand-green-light/10 shadow-2xl overflow-hidden group shadow-brand-green-light/5">
+                    <div className="bg-white/80 backdrop-blur-xl p-10 md:rounded-[38px] rounded-[30px] space-y-8">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-black text-brand-green-dark uppercase italic">Command Access</h2>
                             <div className="p-2 bg-brand-green-light/10 rounded-xl">

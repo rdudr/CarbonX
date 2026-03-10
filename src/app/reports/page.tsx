@@ -149,9 +149,9 @@ export default function ReportsPage() {
     return (
         <div className="fade-in space-y-8 pb-20 print:p-0">
             {/* Header Area - Hidden on Print */}
-            <div className="glass p-8 rounded-4xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-brand-green-light/10 print:hidden">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-brand-green-light/10 print:hidden">
                 <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-3xl bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner">
+                    <div className="w-20 h-20 md:rounded-3xl rounded-2xl bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner">
                         <FileText className="text-brand-green-light" size={40} />
                     </div>
                     <div>
@@ -184,7 +184,7 @@ export default function ReportsPage() {
             </div>
 
             {/* AI Insight Card - Fully Dynamic */}
-            <div className="glass-card theme-yellow p-8 border-none flex flex-col md:flex-row items-center gap-8 shine-hover print:border print:bg-yellow-50/10">
+            <div className="glass-card theme-yellow p-8 border-none flex flex-col md:flex-row items-center gap-8 shine-hover print:border print:bg-yellow-50/10 md:rounded-[35px] rounded-3xl">
                 <div className="w-16 h-16 rounded-2xl bg-white/40 flex items-center justify-center shrink-0 print:hidden">
                     <Activity className="text-yellow-700" size={32} />
                 </div>
@@ -204,27 +204,27 @@ export default function ReportsPage() {
 
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="glass p-8 rounded-3xl border-none theme-mint">
+                <div className="glass p-8 md:rounded-[35px] rounded-3xl border-none theme-mint">
                     <div className="flex items-center gap-3 mb-4">
                         <Activity size={18} className="text-emerald-700" />
                         <span className="text-[10px] font-black opacity-40 uppercase tracking-widest text-emerald-900">Avg Efficiency</span>
                     </div>
                     <div className="text-4xl font-black text-emerald-950 tracking-tighter italic">{avgEfficiency.toFixed(1)}%</div>
                 </div>
-                <div className="glass p-8 rounded-3xl border-none theme-blue">
+                <div className="glass p-8 md:rounded-[35px] rounded-3xl border-none theme-blue">
                     <div className="flex items-center gap-3 mb-4">
                         <BarChart3 size={18} className="text-blue-700" />
                         <span className="text-[10px] font-black opacity-40 uppercase tracking-widest text-blue-900">Total Energy</span>
                     </div>
                     <div className="text-4xl font-black text-blue-950 tracking-tighter italic">{cumulativeKwh.toLocaleString()} <span className="text-lg opacity-40">kWh</span></div>
                 </div>
-                <div className="glass p-8 rounded-3xl border-none theme-peach">
+                <div className="glass p-8 md:rounded-[35px] rounded-3xl border-none theme-peach">
                     <div className="flex items-center gap-3 mb-4">
                         <Badge variant="outline" className="border-orange-500/20 text-orange-600 bg-orange-500/5 uppercase font-black text-[8px]">Target Check</Badge>
                     </div>
                     <div className="text-4xl font-black text-orange-950 tracking-tighter italic">OPTIMAL</div>
                 </div>
-                <div className="glass p-8 rounded-3xl border-none theme-mint text-emerald-700">
+                <div className="glass p-8 md:rounded-[35px] rounded-3xl border-none theme-mint text-emerald-700">
                     <div className="flex items-center gap-3 mb-4">
                         <CheckCircle2 size={18} />
                         <span className="text-[10px] font-black opacity-40 uppercase tracking-widest text-emerald-900">Carbon Offset</span>
@@ -236,7 +236,7 @@ export default function ReportsPage() {
             {/* Machine Health Distribution & Export Actions */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Health Distribution UI */}
-                <Card className="glass-card p-8 border-none lg:col-span-2 shadow-sm">
+                <Card className="glass-card p-8 border-none lg:col-span-2 shadow-sm md:rounded-[35px] rounded-3xl">
                     <h3 className="text-xl font-black text-brand-green-dark uppercase italic mb-8">Machine Health Distribution</h3>
                     <div className="flex gap-4 h-12">
                         <div style={{ width: `${(healthDist.good / config.nodes.length) * 100}%` }} className="bg-emerald-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-emerald-500/20">GOOD</div>
@@ -274,7 +274,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Data Table */}
-            <Card className="glass-card overflow-hidden border-none shadow-sm print:shadow-none print:border">
+            <Card className="glass-card overflow-hidden border-none shadow-sm print:shadow-none print:border md:rounded-[35px] rounded-3xl">
                 <CardHeader className="p-8 border-b border-black/5 bg-brand-green-dark/[0.02]">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <CardTitle className="text-2xl font-black text-brand-green-dark uppercase italic tracking-tight underline decoration-brand-green-light decoration-4 underline-offset-8">Node Inventory Ledger</CardTitle>

@@ -21,9 +21,12 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
 
             if (!isAuthenticated && !isPublicPath) {
                 router.push('/login');
+            } else if (isAuthenticated && pathname === '/login') {
+                // If logged in and trying to access login page, go to dashboard
+                router.push('/dashboard');
             } else if (isAuthenticated && requiredRole && role !== 'ADMIN' && role !== requiredRole) {
                 // If logged in but lacks specific role (ADMIN can see everything)
-                router.push('/');
+                router.push('/dashboard');
             }
         }
     }, [isAuthenticated, role, loading, router, pathname, requiredRole]);

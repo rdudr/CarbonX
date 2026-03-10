@@ -60,7 +60,7 @@ export default function MachinesPage() {
     return (
         <div className="fade-in space-y-8 pb-20">
             {/* Header Area */}
-            <div className="glass p-8 rounded-4xl flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm relative overflow-hidden">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm relative overflow-hidden">
                 <div className="relative z-10">
                     <h1 className="text-4xl font-black tracking-tight text-brand-green-dark flex items-center gap-3">
                         <Activity className="text-brand-green-light" size={32} />
@@ -103,7 +103,7 @@ export default function MachinesPage() {
                         <div className="grid grid-cols-1 gap-8">
                             {filteredMachines.length > 0 ? (
                                 filteredMachines.map(machine => (
-                                    <Card key={machine.nodeId} className="glass-card border-none overflow-hidden hover:shadow-2xl transition-all duration-500">
+                                    <Card key={machine.nodeId} className="glass-card border-none overflow-hidden hover:shadow-2xl transition-all duration-500 md:rounded-[35px] rounded-3xl">
                                         <CardHeader className="bg-brand-green-dark/[0.02] border-b border-black/5 p-6">
                                             <div className="flex justify-between items-center">
                                                 <div>
@@ -149,7 +149,7 @@ export default function MachinesPage() {
                                             </div>
 
                                             {/* Machine Details Footer */}
-                                            <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-3xl bg-black/5">
+                                            <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 md:rounded-3xl rounded-2xl bg-black/5">
                                                 <div className="p-4">
                                                     <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
                                                         <Thermometer size={14} className="text-orange-500" /> Temperature
@@ -179,7 +179,7 @@ export default function MachinesPage() {
                                     </Card>
                                 ))
                             ) : (
-                                <div className="glass p-20 rounded-4xl text-center border-none shadow-sm">
+                                <div className="glass p-20 md:rounded-[40px] rounded-3xl text-center border-none shadow-sm">
                                     <div className="w-20 h-20 bg-brand-green-light/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                         <Activity className="text-brand-green-light/40" size={40} />
                                     </div>

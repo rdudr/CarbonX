@@ -23,7 +23,7 @@ export default function SettingsPage() {
 
     return (
         <div className="fade-in space-y-6 pb-20">
-            <div className="glass p-8 rounded-4xl flex justify-between items-center shadow-sm">
+            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex justify-between items-center shadow-sm">
                 <div>
                     <h1 className="text-4xl font-black tracking-tight text-brand-green-dark">System Protocol</h1>
                     <p className="text-brand-green-dark/60 font-medium">Configure RX Gateways, phase parameters, and alert matrices.</p>
@@ -45,7 +45,7 @@ export default function SettingsPage() {
 
                     <div className="grid grid-cols-1 gap-4">
                         {config.nodes.map((node) => (
-                            <Card key={node.id} className="glass-card border-none overflow-hidden group">
+                            <Card key={node.id} className="glass-card border-none overflow-hidden group md:rounded-[35px] rounded-3xl">
                                 <CardContent className="p-0 flex flex-col md:flex-row">
                                     <div className="w-full md:w-48 bg-brand-green-dark/5 p-6 flex flex-col justify-center border-r border-black/5">
                                         <div className="text-xs font-black text-brand-green-dark/40 uppercase mb-1 tracking-widest">{node.id}</div>
@@ -113,7 +113,7 @@ export default function SettingsPage() {
                         Alert Matrices
                     </h2>
 
-                    <Card className="glass-card theme-peach border-none p-8">
+                    <Card className="glass-card theme-peach border-none p-8 md:rounded-[35px] rounded-3xl">
                         <div className="space-y-6">
                             <div>
                                 <h3 className="text-lg font-black text-orange-900 mb-2">Loss Sensitivity</h3>
@@ -147,7 +147,7 @@ export default function SettingsPage() {
                         </div>
                     </Card>
 
-                    <Card className="glass-card theme-blue border-none p-6 shine-hover">
+                    <Card className="glass-card theme-blue border-none p-6 shine-hover md:rounded-3xl rounded-2xl">
                         <div className="flex gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-white/40 flex items-center justify-center text-blue-700">
                                 <Shield />

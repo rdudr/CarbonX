@@ -21,7 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS = [
-    { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/machines', label: 'Machine Health', icon: Activity },
     { href: '/carbon', label: 'Carbon Analytics', icon: Leaf },
     { href: '/energy', label: 'Energy Monitor', icon: Zap },
@@ -36,19 +36,19 @@ function DesktopNav({ pathname }: { pathname: string }) {
     // Role-based filtering
     const visibleNavItems = NAV_ITEMS.filter(item => {
         if (role === 'ADMIN') return true;
-        if (role === 'ENGINEER') return ['/', '/machines', '/energy', '/settings'].includes(item.href);
-        if (role === 'MANAGER') return ['/', '/carbon', '/reports'].includes(item.href);
+        if (role === 'ENGINEER') return ['/dashboard', '/machines', '/energy', '/settings'].includes(item.href);
+        if (role === 'MANAGER') return ['/dashboard', '/carbon', '/reports'].includes(item.href);
         return false;
     });
 
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-8 py-4 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
+            className="hidden md:flex items-center justify-between px-8 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
-                <Image src="/logo.png" alt="CarbonX Logo" width={110} height={40} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
+                <Image src="/logo.png" alt="CarbonX Logo" width={90} height={32} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
             </Link>
 
             {/* Nav Links */}
@@ -102,8 +102,8 @@ function MobileNav({ pathname }: { pathname: string }) {
 
     const visibleNavItems = NAV_ITEMS.filter(item => {
         if (role === 'ADMIN') return true;
-        if (role === 'ENGINEER') return ['/', '/machines', '/energy', '/settings'].includes(item.href);
-        if (role === 'MANAGER') return ['/', '/carbon', '/reports'].includes(item.href);
+        if (role === 'ENGINEER') return ['/dashboard', '/machines', '/energy', '/settings'].includes(item.href);
+        if (role === 'MANAGER') return ['/dashboard', '/carbon', '/reports'].includes(item.href);
         return false;
     });
 
