@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   creator: 'CarbonX',
   manifest: '/manifest.json',
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
   },
   openGraph: {
     type: 'website',
