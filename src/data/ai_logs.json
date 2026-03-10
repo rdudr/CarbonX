@@ -1,0 +1,58 @@
+[
+    {
+        "timestamp": "2026-03-10T22:30:00Z",
+        "node_id": "TX-01",
+        "zone": "Assembly Line A",
+        "telemetry": {
+            "active_power_kw": 45.2,
+            "voltage_l1": 232.1,
+            "voltage_l2": 230.5,
+            "voltage_l3": 231.8,
+            "current_amps": 195.4,
+            "power_factor": 0.92,
+            "frequency_hz": 50.02,
+            "temperature_c": 42.5
+        },
+        "health_score": 94,
+        "status": "OPERATIONAL",
+        "alerts": []
+    },
+    {
+        "timestamp": "2026-03-10T22:31:45Z",
+        "node_id": "TX-02",
+        "zone": "Fabrication Area",
+        "telemetry": {
+            "active_power_kw": 128.5,
+            "voltage_l1": 228.4,
+            "voltage_l2": 227.9,
+            "voltage_l3": 229.1,
+            "current_amps": 560.2,
+            "power_factor": 0.88,
+            "frequency_hz": 49.98,
+            "temperature_c": 58.2
+        },
+        "health_score": 72,
+        "status": "WARNING",
+        "alerts": [
+            {
+                "type": "THERMAL_WARNING",
+                "severity": "MEDIUM",
+                "message": "Node temperature exceeding threshold (55°C)"
+            }
+        ]
+    },
+    {
+        "timestamp": "2026-03-10T22:32:10Z",
+        "node_id": "RX-Gateway-01",
+        "zone": "Main Office",
+        "telemetry": {
+            "total_inbound_nodes": 45,
+            "aggregated_power_mw": 4.85,
+            "detected_losses_kw": 124.0,
+            "network_stability": 98.5
+        },
+        "health_score": 99,
+        "status": "OPERATIONAL",
+        "alerts": []
+    }
+]

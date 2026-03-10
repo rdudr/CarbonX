@@ -147,8 +147,9 @@ function MobileNav({ pathname }: { pathname: string }) {
                     />
 
                     <div
-                        className="relative ml-auto w-72 h-full glass border-l border-brand-green-light/10 shadow-2xl flex flex-col p-6 gap-6 animate-slide-in"
+                        className="relative ml-auto w-72 h-full glass-thick border-l border-brand-green-light/10 shadow-2xl flex flex-col p-8 gap-8 animate-slide-in overflow-hidden"
                     >
+                        <div className="absolute inset-0 dot-pattern opacity-20 -z-10" />
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Image src="/logo.png" alt="CarbonX Logo" width={90} height={24} className="object-contain" />

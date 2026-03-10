@@ -1,0 +1,38 @@
+CarbonX AI Telemetry Log Structure (JSON/Firebase)
+=================================================
+
+The following structure is used for 'ai_logs' within Firestore or as JSON exports.
+
+{
+  "timestamp": "ISO-8601 String", 
+  "node_id": "String (TX-01, RX-Gateway, etc.)",
+  "zone": "String (Location in plant)",
+  "telemetry": {
+    "active_power_kw": Float (Real power consumption),
+    "voltage_l1": Float (Voltage Phase 1),
+    "voltage_l2": Float (Voltage Phase 2/0 if single),
+    "voltage_l3": Float (Voltage Phase 3/0 if single),
+    "current_amps": Float (Aggregated current),
+    "power_factor": Float (0.0 to 1.0),
+    "frequency_hz": Float (Network frequency),
+    "temperature_c": Float (Node heat)
+  },
+  "health_score": Integer (0-100 calculated by AI),
+  "status": "OPERATIONAL | WARNING | CRITICAL | MAINTENANCE",
+  "alerts": [
+    {
+      "type": "String",
+      "severity": "LOW | MEDIUM | HIGH",
+      "message": "Human readable alert message"
+    }
+  ]
+}
+
+Example Firebase Query for Live Feed:
+-------------------------------------
+db.collection('ai_logs')
+  .orderBy('timestamp', 'desc')
+  .limit(20)
+  .onSnapshot(snapshot => {
+    // Process live data...
+  });

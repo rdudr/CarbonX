@@ -29,39 +29,42 @@ export default function Page() {
 function HeroSection() {
   const { isAuthenticated } = useAuth();
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center relative py-10 px-4">
-      {/* Background Polish */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-6xl aspect-square bg-brand-green-light/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <div className="min-h-[90vh] flex flex-col items-center justify-center relative py-12 px-4 overflow-hidden">
+      {/* Refined Industrial Background */}
+      <div className="absolute inset-0 grid-overlay opacity-40 -z-20" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl aspect-square bg-brand-green-light/5 blur-[140px] rounded-full pointer-events-none -z-10" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full max-w-7xl mx-auto">
-        <div className="space-y-8 text-center lg:text-left">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center w-full max-w-7xl mx-auto relative z-10">
+        <div className="space-y-10 text-center lg:text-left">
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="inline-block p-4 glass rounded-3xl border border-brand-green-light/20 mb-2"
+            className="inline-flex items-center gap-3 p-2 pr-6 glass rounded-full border border-brand-green-light/20 mb-2"
           >
-            <Image src="/logo.png" alt="CarbonX" width={180} height={50} className="object-contain" priority />
+            <div className="p-2 bg-brand-green-light rounded-full">
+              <Zap size={16} className="text-white" />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green-dark/60">v4.0 Protocol Active</span>
           </motion.div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             <motion.h1
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-6xl md:text-8xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.85]"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-7xl md:text-9xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.8] text-glow"
             >
-              Next Gen <br />
-              <span className="text-brand-green-light">Industrial</span><br />
-              Intelligence
+              Industry <br />
+              <span className="text-brand-green-light underline decoration-[12px] underline-offset-[12px]">Forensics</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-xl text-brand-green-dark/60 font-medium max-w-xl mx-auto lg:mx-0"
+              transition={{ delay: 0.5 }}
+              className="text-xl md:text-2xl text-brand-green-dark/50 font-medium max-w-xl mx-auto lg:mx-0 leading-relaxed"
             >
-              Unlock real-time energy forensics, AI machine health tracking, and plant-wide carbon neutrality with RX/TX architecture.
+              Real-time energy telemetry and AI machine diagnostics for the next generation of industrial efficiency.
             </motion.p>
           </div>
 
@@ -69,32 +72,44 @@ function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5"
           >
             <Link href={isAuthenticated ? "/dashboard" : "/login"}>
-              <Button className="h-16 px-10 rounded-2xl bg-brand-green-dark text-white hover:bg-brand-green-dark/90 text-lg font-black uppercase italic tracking-widest gap-4 shadow-xl shadow-brand-green-dark/20 group">
-                {isAuthenticated ? "Go to Dashboard" : "Get Started"}
-                <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+              <Button className="h-20 px-12 rounded-[2rem] bg-brand-green-dark text-white hover:bg-brand-green-dark/95 text-xl font-black uppercase italic tracking-widest gap-4 shadow-2xl shadow-brand-green-dark/30 group border-b-4 border-black/20 transform active:translate-y-1 transition-all">
+                {isAuthenticated ? "Enter Command" : "Get Started"}
+                <ArrowRight className="group-hover:translate-x-3 transition-transform" />
               </Button>
             </Link>
-            <Button variant="outline" className="h-16 px-10 rounded-2xl border-brand-green-light/20 text-brand-green-dark font-black uppercase italic tracking-widest hover:bg-brand-green-light/5">
-              Request Demo
+            <Button variant="ghost" className="h-20 px-8 rounded-full text-brand-green-dark/40 font-black uppercase italic tracking-widest hover:text-brand-green-dark hover:bg-brand-green-light/5 gap-3">
+              <Globe size={18} />
+              Global Scale
             </Button>
           </motion.div>
         </div>
 
-        {/* 3D Product Model Placeholder */}
-        <div className="relative h-[500px] flex items-center justify-center">
+        {/* 3D Product Model Placeholder with better Framing */}
+        <div className="relative h-[600px] flex items-center justify-center group">
+          <div className="absolute inset-0 bg-brand-green-light/5 blur-[100px] rounded-full scale-75 animate-pulse" />
           <motion.div
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="w-full h-full glass md:rounded-[60px] rounded-[40px] border border-white/40 shadow-2xl flex items-center justify-center relative overflow-hidden group"
+            animate={{ y: [0, -30, 0], rotate: [0, 2, 0, -2, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="w-full max-w-lg aspect-square glass-thick md:rounded-[80px] rounded-[50px] border border-white flex items-center justify-center relative shadow-inner overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-green-light/10 to-transparent" />
-            <div className="flex flex-col items-center gap-6 relative z-10 text-brand-green-dark/20">
-              <Box size={120} className="animate-pulse" />
-              <div className="text-xs font-black uppercase tracking-[0.4em]">Product Model Slot</div>
+            <div className="absolute inset-0 dot-pattern opacity-20" />
+            <div className="absolute top-8 left-8 p-3 glass rounded-2xl border-white/40">
+              <div className="w-2 h-2 rounded-full bg-brand-green-light animate-ping" />
             </div>
+
+            <div className="flex flex-col items-center gap-8 relative z-10 text-brand-green-dark/10">
+              <Box size={160} className="animate-float" />
+              <div className="flex flex-col items-center gap-2">
+                <div className="text-[10px] font-black uppercase tracking-[0.5em] opacity-40">Industrial Node</div>
+                <div className="h-1 w-20 bg-brand-green-light/20 rounded-full" />
+              </div>
+            </div>
+
+            {/* Corner Decorative Lines */}
+            <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-brand-green-light/10 rounded-br-[80px]" />
           </motion.div>
         </div>
       </div>
@@ -104,26 +119,31 @@ function HeroSection() {
 
 function FeatureGrid() {
   const features = [
-    { title: "Plant Scale", desc: "Monitor thousands of RX/TX nodes simultaneously.", icon: Globe },
-    { title: "AI Health Score", desc: "Predictive failure detection with 99% accuracy.", icon: Activity },
-    { title: "Energy Forensics", desc: "Identify hidden leakages across your entire plant.", icon: Zap },
-    { title: "Carbon Offset", desc: "Real-time sustainability metrics and tree tracking.", icon: Leaf },
+    { title: "Plant Scale", desc: "RX/TX mesh networking for seamless factory-wide data aggregation.", icon: Globe, theme: "theme-mint" },
+    { title: "AI Integrity", desc: "Neural forecasting models detecting anomalies before failure.", icon: Activity, theme: "theme-peach" },
+    { title: "Zero Loss", desc: "Identify 3-phase imbalances and energy leakages instantly.", icon: Zap, theme: "theme-blue" },
+    { title: "Sustainability", desc: "Automated carbon footprint reporting and tree offset tracking.", icon: Leaf, theme: "theme-yellow" },
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <section className="max-w-7xl mx-auto px-4 py-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {features.map((f, i) => (
           <motion.div
             key={i}
-            whileHover={{ y: -10 }}
-            className="glass p-8 rounded-3xl border border-black/5 hover:border-brand-green-light/20 transition-all group"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -12, scale: 1.02 }}
+            className={cn("p-10 rounded-[2.5rem] shadow-sm border border-black/5 relative overflow-hidden group", f.theme)}
           >
-            <div className="w-14 h-14 rounded-2xl bg-brand-green-light/10 flex items-center justify-center mb-6 group-hover:bg-brand-green-light/20 transition-colors">
-              <f.icon className="text-brand-green-light" size={28} />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-[40px] -mr-16 -mt-16 group-hover:scale-150 transition-transform" />
+            <div className="w-16 h-16 rounded-[1.25rem] bg-white/60 flex items-center justify-center mb-8 shadow-sm">
+              <f.icon className="text-brand-green-dark" size={32} />
             </div>
-            <h3 className="text-xl font-black text-brand-green-dark mb-2 tracking-tight">{f.title}</h3>
-            <p className="text-brand-green-dark/50 text-sm font-medium leading-relaxed">{f.desc}</p>
+            <h3 className="text-2xl font-black text-brand-green-dark mb-3 tracking-tight italic uppercase">{f.title}</h3>
+            <p className="text-brand-green-dark/60 text-sm font-medium leading-relaxed">{f.desc}</p>
           </motion.div>
         ))}
       </div>
@@ -134,38 +154,45 @@ function FeatureGrid() {
 function HardwareShowcase() {
   const [mode, setMode] = useState<'operational' | 'debug' | 'emergency'>('operational');
 
-  const modeColors: Record<'operational' | 'debug' | 'emergency', string> = {
-    operational: 'text-brand-green-light bg-brand-green-light/10 border-brand-green-light/20',
-    debug: 'text-brand-yellow bg-brand-yellow/10 border-brand-yellow/20',
-    emergency: 'text-red-500 bg-red-500/10 border-red-500/20'
+  const modeContent = {
+    operational: { title: "Standard Protocol", desc: "High-precision sampling active. AES-256 encrypted sync loop running every 500ms." },
+    debug: { title: "Telemetry Audit", desc: "Detailed wave-form analysis enabled. Reporting phase-level harmonic distortion." },
+    emergency: { title: "Critical Safe", desc: "Automatic disconnect sequence primed. Cooling protocols initialized." }
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-center gap-20 py-20 bg-brand-green-light/[0.02] rounded-[100px] border border-brand-green-light/5">
-      <div className="flex-1 space-y-8 text-center lg:text-left">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-green-dark/5 text-brand-green-dark/40 text-[10px] font-black uppercase tracking-widest">
-          Hardware Intelligence
+    <section className="max-w-7xl mx-auto px-4 flex flex-col lg:flex-row items-center gap-16 py-32 relative">
+      <div className="absolute top-0 right-10 w-64 h-64 bg-brand-yellow/5 blur-[120px] rounded-full -z-10" />
+
+      <div className="flex-1 space-y-10 text-center lg:text-left">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand-green-dark text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-brand-green-dark/20">
+            Hardware 4.0
+          </div>
+          <h2 className="text-6xl md:text-8xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.85]">
+            The <span className="text-brand-green-light">CarbonX</span> <br /> Core Node
+          </h2>
+          <p className="text-xl text-brand-green-dark/40 font-medium max-w-lg leading-relaxed">
+            Industrial-grade RX/TX nodes designed for harsh environments and zero-latency forensics.
+          </p>
         </div>
-        <h2 className="text-5xl md:text-7xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.9]">
-          The <span className="text-brand-green-light">CarbonX</span> <br /> TX-Node
-        </h2>
-        <p className="text-lg text-brand-green-dark/60 font-medium max-w-lg">
-          Our proprietary hardware handles high-speed sampling and local encryption before syncing to the RX Gateway.
-        </p>
 
         {/* Hardware Mode Switcher */}
-        <div className="space-y-4">
-          <p className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">Select Hardware Mode</p>
-          <div className="flex flex-wrap justify-center lg:justify-start gap-4">
+        <div className="space-y-6 glass p-8 rounded-[2.5rem] border border-black/5 bg-white/40">
+          <div className="flex flex-col gap-1">
+            <p className="text-[10px] font-black text-brand-green-light uppercase tracking-[0.3em]">{modeContent[mode].title}</p>
+            <p className="text-sm font-medium text-brand-green-dark/60 italic">{modeContent[mode].desc}</p>
+          </div>
+          <div className="flex flex-wrap justify-center lg:justify-start gap-3">
             {(['operational', 'debug', 'emergency'] as const).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
                 className={cn(
-                  "px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all",
+                  "px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all transform active:scale-95 border-b-4",
                   mode === m
-                    ? "bg-brand-green-dark text-white shadow-xl shadow-brand-green-dark/20"
-                    : "bg-white border border-black/5 text-brand-green-dark/40 hover:bg-black/5"
+                    ? "bg-brand-green-dark text-white border-black/20 shadow-xl"
+                    : "bg-white border-black/5 text-brand-green-dark/40 hover:bg-black/5 border-b-transparent"
                 )}
               >
                 {m}
@@ -175,28 +202,42 @@ function HardwareShowcase() {
         </div>
       </div>
 
-      <div className="flex-1 w-full max-w-xl h-[450px] relative">
+      <div className="flex-1 w-full max-w-2xl h-[550px] relative">
         <motion.div
           animate={{
-            scale: mode === 'emergency' ? [1, 1.02, 1] : 1,
-            rotate: mode === 'debug' ? [0, 2, 0, -2, 0] : 0
+            scale: mode === 'emergency' ? [1, 1.05, 1] : 1,
+            rotate: mode === 'debug' ? [0, 3, 0, -3, 0] : 0
           }}
-          transition={{ duration: 0.5, repeat: mode !== 'operational' ? Infinity : 0 }}
-          className="w-full h-full glass md:rounded-[60px] rounded-[40px] border-2 border-dashed border-black/10 flex items-center justify-center relative shadow-inner group"
+          transition={{ duration: 0.4, repeat: mode !== 'operational' ? Infinity : 0 }}
+          className="w-full h-full glass-thick md:rounded-[80px] rounded-[50px] border-2 border-dashed border-black/10 flex items-center justify-center relative shadow-2xl overflow-hidden"
         >
-          {/* Glow effect based on mode */}
           <div className={cn(
-            "absolute inset-0 transition-all duration-1000 blur-[80px] opacity-30",
+            "absolute inset-0 transition-all duration-1000 blur-[100px] opacity-40",
             mode === 'operational' ? "bg-brand-green-light" : mode === 'debug' ? "bg-brand-yellow" : "bg-red-500"
           )} />
+          <div className="absolute inset-0 dot-pattern opacity-10" />
 
-          <div className="flex flex-col items-center gap-6 relative z-10">
-            <div className={cn("w-24 h-24 rounded-3xl border-2 flex items-center justify-center transition-all duration-500", modeColors[mode])}>
-              <HardHat size={40} />
+          <div className="flex flex-col items-center gap-10 relative z-10">
+            <div className={cn(
+              "w-32 h-32 rounded-[2.5rem] border-4 flex items-center justify-center transition-all duration-500 shadow-xl bg-white",
+              mode === 'operational' ? "border-brand-green-light text-brand-green-light" :
+                mode === 'debug' ? "border-brand-yellow text-brand-yellow" :
+                  "border-red-500 text-red-500 animate-pulse"
+            )}>
+              <HardHat size={56} />
             </div>
-            <div className="text-center">
-              <div className="text-brand-green-dark font-black text-xl italic uppercase">TX-Node v4.0</div>
-              <div className={cn("text-[10px] font-black uppercase mt-1", mode === 'emergency' ? 'text-red-500' : 'opacity-40')}>Hardware Placeholder</div>
+            <div className="text-center space-y-2">
+              <div className="text-brand-green-dark font-black text-3xl italic uppercase tracking-tighter">TX-Node v4.0</div>
+              <div className="flex items-center justify-center gap-3">
+                <span className="text-[10px] font-black uppercase text-brand-green-dark/30 tracking-widest">Active Link</span>
+                <div className="w-12 h-1 bg-brand-green-light/20 rounded-full">
+                  <motion.div
+                    animate={{ width: ['0%', '100%'] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="h-full bg-brand-green-light rounded-full"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -207,34 +248,33 @@ function HardwareShowcase() {
 
 function SustainabilityInsight() {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-20 text-center space-y-12">
-      <div className="space-y-4">
-        <h2 className="text-4xl md:text-5xl font-black text-brand-green-dark tracking-tighter uppercase italic">
-          Built for <span className="text-brand-green-light">Sustainability</span>
+    <section className="max-w-7xl mx-auto px-4 py-32 text-center space-y-16 relative">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[300px] bg-emerald-500/5 blur-[120px] rounded-full -z-10" />
+
+      <div className="space-y-6">
+        <h2 className="text-5xl md:text-7xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.85]">
+          Built for <span className="text-brand-green-light">Net-Zero</span>
         </h2>
-        <p className="text-lg text-brand-green-dark/40 font-medium max-w-2xl mx-auto">
-          We combine IIoT data with environmental modeling to help industrial leaders reach Net Zero targets faster.
+        <p className="text-xl text-brand-green-dark/40 font-medium max-w-2xl mx-auto leading-relaxed">
+          The only industrial platform combining high-resolution IoT forensics with automated carbon neutrality workflows.
         </p>
       </div>
 
-      <div className="glass p-12 md:rounded-[60px] rounded-[40px] border border-black/5 bg-gradient-to-br from-emerald-500/[0.03] to-transparent">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div>
-            <div className="text-4xl font-black text-brand-green-dark mb-1 tabular-nums">1.2M+</div>
-            <div className="text-[10px] font-black opacity-30 uppercase tracking-widest">Metric Tons CO2 Tracked</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { label: "CO2 Tracked", val: "1.2M+", sub: "Metric Tons Annually" },
+          { label: "Offset Value", val: "850k", sub: "Simulated Tree Units" },
+          { label: "Avg Reduction", val: "14%", sub: "Industrial Waste Recovery" }
+        ].map((stat, i) => (
+          <div key={i} className="glass p-12 rounded-[3rem] border border-black/5 bg-white group hover:border-brand-green-light/20 transition-all">
+            <div className="text-5xl md:text-6xl font-black text-brand-green-dark mb-4 tabular-nums tracking-tighter text-glow group-hover:scale-110 transition-transform">{stat.val}</div>
+            <div className="space-y-1">
+              <div className="text-[10px] font-black opacity-30 uppercase tracking-[0.2em]">{stat.label}</div>
+              <div className="text-xs font-bold text-brand-green-light/40 italic">{stat.sub}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-4xl font-black text-brand-green-dark mb-1 tabular-nums">850k</div>
-            <div className="text-[10px] font-black opacity-30 uppercase tracking-widest">Simulated Tree Offsets</div>
-          </div>
-          <div>
-            <div className="text-4xl font-black text-brand-green-dark mb-1 tabular-nums">14%</div>
-            <div className="text-[10px] font-black opacity-30 uppercase tracking-widest">Avg Energy Savings</div>
-          </div>
-        </div>
+        ))}
       </div>
     </section>
   );
 }
-
-

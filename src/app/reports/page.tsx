@@ -149,25 +149,26 @@ export default function ReportsPage() {
     return (
         <div className="fade-in space-y-8 pb-20 print:p-0">
             {/* Header Area - Hidden on Print */}
-            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-center shadow-sm border border-brand-green-light/10 print:hidden">
-                <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 md:rounded-3xl rounded-2xl bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner">
-                        <FileText className="text-brand-green-light" size={40} />
+            <div className="glass-thick p-6 md:p-10 md:rounded-[50px] rounded-[35px] flex flex-col lg:flex-row justify-between items-center shadow-sm border border-brand-green-light/10 relative overflow-hidden group print:hidden">
+                <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
+                <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                    <div className="w-20 h-20 md:rounded-3xl rounded-[2rem] bg-brand-green-light/10 flex items-center justify-center border border-brand-green-light/20 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                        <FileText className="text-brand-green-light" size={44} />
                     </div>
-                    <div>
-                        <h1 className="text-4xl font-black tracking-tight text-brand-green-dark uppercase italic">Report Lab</h1>
-                        <p className="text-brand-green-dark/60 font-medium">Generate industrial grade data exports and analytics.</p>
+                    <div className="text-center md:text-left space-y-1">
+                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-brand-green-dark uppercase italic">Report Lab</h1>
+                        <p className="text-brand-green-dark/60 font-medium text-sm">Generate industrial grade data exports and analytics.</p>
                     </div>
                 </div>
-                <div className="mt-6 md:mt-0 flex gap-3 p-1.5 bg-black/[0.03] rounded-2xl border border-black/5">
+                <div className="mt-8 lg:mt-0 flex gap-2 p-2 bg-black/[0.03] rounded-3xl border border-black/5 relative z-10">
                     {(['daily', 'weekly', 'monthly'] as const).map((p) => (
                         <button
                             key={p}
                             onClick={() => setReportPeriod(p)}
                             className={cn(
-                                "px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all",
+                                "px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all",
                                 reportPeriod === p
-                                    ? "bg-brand-green-dark text-white shadow-lg"
+                                    ? "bg-brand-green-dark text-white shadow-xl shadow-brand-green-dark/20"
                                     : "text-brand-green-dark/40 hover:text-brand-green-dark hover:bg-white/50"
                             )}
                         >

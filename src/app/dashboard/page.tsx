@@ -124,23 +124,24 @@ export default function DashboardPage() {
         <div className="space-y-6 pb-10 fade-in px-4 md:px-0">
             <NotificationOverlay />
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 glass md:rounded-[40px] rounded-3xl shadow-sm border border-brand-green-light/10">
-                <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-brand-green-light/5 flex items-center justify-center border border-brand-green-light/20 shadow-inner group">
-                        <Image src="/logo.png" alt="Logo" width={44} height={44} className="group-hover:rotate-12 transition-transform duration-500" />
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center p-8 glass-thick md:rounded-[50px] rounded-[35px] shadow-sm border border-brand-green-light/10 relative overflow-hidden group">
+                <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
+                <div className="flex items-center gap-5">
+                    <div className="w-18 h-18 rounded-3xl bg-brand-green-light/5 flex items-center justify-center border border-brand-green-light/20 shadow-inner group-hover:bg-brand-green-light/10 transition-colors">
+                        <Image src="/logo.png" alt="Logo" width={50} height={50} className="group-hover:rotate-12 transition-transform duration-500 object-contain" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-black italic uppercase tracking-tighter text-brand-green-dark leading-none">Industrial Command</h1>
-                        <p className="text-brand-green-dark/40 text-[10px] font-black uppercase tracking-[0.3em] mt-1">RX Gateway Protocol: {gateway.name}</p>
+                        <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-brand-green-dark leading-none">Command Center</h1>
+                        <p className="text-brand-green-dark/40 text-[10px] font-black uppercase tracking-[0.4em] mt-2">Node Protocol: {gateway.name}</p>
                     </div>
                 </div>
-                <div className="mt-4 md:mt-0 flex gap-2">
-                    <Badge variant="outline" className="bg-brand-green-light/10 border-brand-green-light/20 text-brand-green-light px-4 py-2 rounded-2xl font-black italic uppercase tracking-widest text-[10px]">
-                        <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse mr-2" />
-                        Live Feed
+                <div className="mt-6 lg:mt-0 flex flex-wrap gap-3">
+                    <Badge variant="outline" className="bg-brand-green-light/10 border-brand-green-light/20 text-brand-green-light px-6 py-2.5 rounded-full font-black italic uppercase tracking-widest text-[10px] flex items-center shadow-sm">
+                        <span className="w-2.5 h-2.5 rounded-full bg-brand-green-light animate-pulse mr-3" />
+                        Live Rx/Tx
                     </Badge>
-                    <Badge variant="outline" className="bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow px-4 py-2 rounded-2xl font-black italic uppercase tracking-widest text-[10px]">
-                        AI Processing
+                    <Badge variant="outline" className="bg-brand-yellow/10 border-brand-yellow/20 text-brand-yellow px-6 py-2.5 rounded-full font-black italic uppercase tracking-widest text-[10px] shadow-sm">
+                        AI Verified
                     </Badge>
                 </div>
             </div>

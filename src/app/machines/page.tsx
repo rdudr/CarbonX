@@ -60,19 +60,20 @@ export default function MachinesPage() {
     return (
         <div className="fade-in space-y-8 pb-20">
             {/* Header Area */}
-            <div className="glass p-8 md:rounded-[40px] rounded-3xl flex flex-col md:flex-row justify-between items-start md:items-center shadow-sm relative overflow-hidden">
-                <div className="relative z-10">
-                    <h1 className="text-4xl font-black tracking-tight text-brand-green-dark flex items-center gap-3">
-                        <Activity className="text-brand-green-light" size={32} />
+            <div className="glass-thick p-6 md:p-10 md:rounded-[50px] rounded-[35px] flex flex-col lg:flex-row justify-between items-start lg:items-center shadow-sm relative overflow-hidden group">
+                <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
+                <div className="relative z-10 space-y-2">
+                    <h1 className="text-3xl md:text-5xl font-black tracking-tighter italic uppercase text-brand-green-dark flex items-center gap-4">
+                        <Activity className="text-brand-green-light" size={36} />
                         Machine Health
                     </h1>
-                    <p className="text-brand-green-dark/60 font-medium mt-1">Real-time telemetry and gauge monitoring across plant zones.</p>
+                    <p className="text-brand-green-dark/60 font-medium text-sm md:text-base">Real-time telemetry and gauge monitoring across plant zones.</p>
                 </div>
 
-                <div className="mt-6 md:mt-0 flex gap-4 relative z-10">
-                    <div className="glass bg-brand-green-light/10 border-brand-green-light/20 px-6 py-3 rounded-2xl">
-                        <div className="text-[10px] font-black opacity-40 uppercase tracking-widest text-brand-green-dark">Operational Machines</div>
-                        <div className="text-2xl font-black text-brand-green-dark">{filteredMachines.length} / {machines.length} <span className="text-sm opacity-40">Online</span></div>
+                <div className="mt-8 lg:mt-0 flex gap-4 relative z-10">
+                    <div className="glass-thick bg-brand-green-light/10 border-brand-green-light/20 px-8 py-4 rounded-3xl shadow-sm">
+                        <div className="text-[10px] font-black opacity-40 uppercase tracking-[0.3em] text-brand-green-dark">Nodes Operational</div>
+                        <div className="text-3xl font-black text-brand-green-dark italic">{filteredMachines.length} <span className="text-sm opacity-40 uppercase">/ {machines.length} Total</span></div>
                     </div>
                 </div>
 
