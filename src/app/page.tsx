@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
-  Activity, Zap, Leaf, Factory, ArrowRight, Globe, Box, HardHat
+  Activity, Zap, Leaf, Factory, ArrowRight, Globe, Box, HardHat,
+  Cpu, Shield, Layers, BarChart3, Database, Workflow, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -21,8 +22,131 @@ export default function Page() {
       <HeroSection />
       <FeatureGrid />
       <HardwareShowcase />
+      <ProcessArchitecture />
+      <TechnicalHighlights />
+      <GlobalImpactTicker />
       <SustainabilityInsight />
     </div>
+  );
+}
+
+function ProcessArchitecture() {
+  const steps = [
+    { icon: Cpu, label: "Sensor Core", detail: "High-freq sampling" },
+    { icon: Database, label: "RX Registry", detail: "Encrypted sync" },
+    { icon: Activity, label: "AI Analysis", detail: "Anomaly detection" },
+    { icon: Leaf, label: "Carbon Ledger", detail: "Automated offsets" },
+  ];
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 py-32 relative overflow-hidden">
+      <div className="absolute inset-0 blueprint-bg opacity-30 -z-10" />
+
+      <div className="text-center mb-20 space-y-4">
+        <h2 className="text-4xl md:text-6xl font-black text-brand-green-dark tracking-tighter uppercase italic line-through decoration-brand-green-light decoration-4">
+          The CarbonX <span className="no-underline">Stack</span>
+        </h2>
+        <p className="text-brand-green-dark/40 font-bold uppercase tracking-widest text-[10px]">End-to-end industrial intelligence architecture</p>
+      </div>
+
+      <div className="relative flex flex-col md:flex-row items-center justify-between gap-12 lg:gap-0">
+        {/* Connection Lines (Desktop) */}
+        <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-green-light/20 to-transparent -translate-y-1/2 hidden md:block" />
+
+        {steps.map((step, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.2 }}
+            viewport={{ once: true }}
+            className="relative z-10 group"
+          >
+            <div className="flex flex-col items-center">
+              <div className="w-32 h-32 rounded-[2.5rem] glass-thick border-4 border-white shadow-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-brand-green-light text-brand-green-dark group-hover:text-white transition-all duration-500">
+                <step.icon size={44} strokeWidth={1.5} />
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-black text-brand-green-dark uppercase italic tracking-tighter">{step.label}</div>
+                <div className="text-[10px] font-bold text-brand-green-light uppercase tracking-widest mt-1">{step.detail}</div>
+              </div>
+            </div>
+
+            {/* Animated Connector (Mobile) */}
+            {i < steps.length - 1 && (
+              <div className="md:hidden w-px h-12 bg-brand-green-light/20 my-4 mx-auto" />
+            )}
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function TechnicalHighlights() {
+  return (
+    <section className="max-w-7xl mx-auto px-4 py-32 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div className="relative group">
+        <div className="absolute -inset-4 bg-brand-green-light/5 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="tech-border p-12 glass shadow-2xl rounded-3xl space-y-8 relative">
+          <div className="absolute top-4 right-4 text-[8px] font-black text-brand-green-light/40 uppercase tracking-[0.5em] vertical-rl">
+            Specs-v4.0.0
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 text-brand-green-light">
+              <ShieldCheck size={20} />
+              <span className="text-xs font-black uppercase tracking-widest">Safety Integrity</span>
+            </div>
+            <h3 className="text-4xl font-black text-brand-green-dark uppercase italic tracking-tighter">Hardened <br /> Forensic Base</h3>
+          </div>
+
+          <p className="text-brand-green-dark/60 font-medium leading-relaxed">
+            Every CarbonX node is encased in 5mm industrial-grade anodized aluminum. Designed to operate at temperatures up to 85°C with zero thermal throttling.
+          </p>
+
+          <div className="grid grid-cols-2 gap-6 pt-6">
+            <div className="space-y-1">
+              <div className="text-2xl font-black text-brand-green-dark italic">IP67</div>
+              <div className="text-[10px] font-bold text-brand-green-dark/30 uppercase">Ingress Protection</div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-2xl font-black text-brand-green-dark italic">4.2TB/s</div>
+              <div className="text-[10px] font-bold text-brand-green-dark/30 uppercase">Bus Bandwidth</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-12">
+        <div className="space-y-4">
+          <Badge variant="outline" className="bg-brand-green-light/10 border-brand-green-light/20 text-brand-green-light px-4 py-1.5 rounded-full font-black text-[10px] uppercase tracking-widest">
+            Telemetry Insight
+          </Badge>
+          <h2 className="text-5xl md:text-7xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.85]">
+            Forensics <br /> Beyond <span className="text-brand-green-light">Data</span>
+          </h2>
+        </div>
+
+        <div className="space-y-8">
+          {[
+            { icon: Workflow, title: "Neural Flow", desc: "Real-time process mapping via RX/TX mesh." },
+            { icon: Layers, title: "Depth Analysis", desc: "Harmonic distortion tracking across 3-phases." },
+            { icon: Shield, title: "Edge Security", desc: "Zero-knowledge proof validation for every sync." }
+          ].map((item, i) => (
+            <div key={i} className="flex gap-6 group">
+              <div className="w-16 h-16 shrink-0 rounded-2xl bg-white shadow-sm border border-black/5 flex items-center justify-center text-brand-green-dark group-hover:bg-brand-green-dark group-hover:text-white transition-all duration-300">
+                <item.icon size={28} />
+              </div>
+              <div>
+                <h4 className="text-xl font-black text-brand-green-dark uppercase italic tracking-tight">{item.title}</h4>
+                <p className="text-brand-green-dark/50 text-sm font-medium">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -276,5 +400,33 @@ function SustainabilityInsight() {
         ))}
       </div>
     </section>
+  );
+}
+
+function GlobalImpactTicker() {
+  const metrics = [
+    { label: "Net Zero Path", val: "Active" },
+    { label: "Plant Registry", val: "Verified" },
+    { label: "AI Prediction", val: "99.2%" },
+    { label: "Mesh Uptime", val: "100%" },
+    { label: "Security Level", val: "AES-256" },
+  ];
+
+  return (
+    <div className="w-full bg-brand-green-dark py-4 overflow-hidden border-y border-white/10">
+      <div className="flex whitespace-nowrap animate-marquee">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="flex gap-20 items-center px-10">
+            {metrics.map((m, j) => (
+              <div key={j} className="flex items-center gap-3">
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-green-light" />
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">{m.label}</span>
+                <span className="text-[10px] font-black text-brand-green-light uppercase italic">{m.val}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
