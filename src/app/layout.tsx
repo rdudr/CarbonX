@@ -4,6 +4,7 @@ import './globals.css';
 import { AppNavigation } from '@/components/AppNavigation';
 import { PWAInstallBanner } from '@/components/PWAInstallBanner';
 import { AuthProvider } from '@/context/AuthContext';
+import LiquidEther from '@/components/LiquidEther';
 import { AuthGuard } from '@/components/AuthGuard';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -50,16 +51,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/logo.png" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="icon" href="/carbon_logo.png" />
+        <link rel="apple-touch-icon" href="/carbon_logo.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="CarbonX" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={`${inter.className} min-h-screen relative overflow-x-hidden text-brand-green-dark`}>
+      <body className={`${inter.className} min-h-screen relative overflow-x-hidden text-brand-green-dark`} suppressHydrationWarning>
         <AuthProvider>
           <AuthGuard>
             <SystemProvider>
@@ -69,9 +70,10 @@ export default function RootLayout({
               {/* Responsive Navigation — top-left for desktop, hamburger for mobile */}
               <AppNavigation />
 
-              {/* Ambient Glows for the Liquid Glass look */}
-              <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-green-light/20 blur-[120px] rounded-full pointer-events-none" />
-              <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-brand-yellow/10 blur-[150px] rounded-full pointer-events-none" />
+              {/* LiquidEther React Bits Background */}
+              <div className="fixed inset-0 -z-50 bg-black/5">
+                <LiquidEther colors={['#25671E', '#48A111', '#bbf7d0']} />
+              </div>
 
               <main className="relative z-10 p-4 md:p-8 max-w-7xl mx-auto min-h-[calc(100vh-80px)] pb-8">
                 {children}

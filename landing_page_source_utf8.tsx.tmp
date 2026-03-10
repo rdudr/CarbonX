@@ -103,7 +103,7 @@ function TechnicalHighlights() {
           </div>
 
           <p className="text-brand-green-dark/60 font-medium leading-relaxed">
-            Every CarbonX node is encased in 5mm industrial-grade anodized aluminum. Designed to operate at temperatures up to 85-¦C with zero thermal throttling.
+            Every CarbonX node is encased in 5mm industrial-grade anodized aluminum. Designed to operate at temperatures up to 85┬░C with zero thermal throttling.
           </p>
 
           <div className="grid grid-cols-2 gap-6 pt-6">
@@ -178,7 +178,7 @@ function HeroSection() {
             <div className="p-2 bg-brand-green-light rounded-full">
               <Zap size={16} className="text-white" />
             </div>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green-dark/60">System Ready GÇó v4.0</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-green-dark/60">System Ready ΓÇó v4.0</span>
           </motion.div>
 
           <div className="space-y-6">

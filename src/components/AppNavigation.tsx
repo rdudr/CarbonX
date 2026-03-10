@@ -48,7 +48,7 @@ function DesktopNav({ pathname }: { pathname: string }) {
         >
             {/* Logo + Brand */}
             <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
-                <Image src="/logo.png" alt="CarbonX Logo" width={80} height={28} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
+                <Image src="/carbon_logo.png" alt="CarbonX Logo" width={80} height={28} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
             </Link>
 
             {/* Nav Links */}
@@ -123,7 +123,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                 className="md:hidden flex items-center justify-between px-4 py-2 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50"
             >
                 <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.png" alt="CarbonX Logo" width={100} height={28} className="object-contain" priority />
+                    <Image src="/carbon_logo.png" alt="CarbonX Logo" width={100} height={28} className="object-contain" priority />
                 </Link>
 
                 <button
@@ -152,7 +152,7 @@ function MobileNav({ pathname }: { pathname: string }) {
                         <div className="absolute inset-0 dot-pattern opacity-20 -z-10" />
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                                <Image src="/logo.png" alt="CarbonX Logo" width={90} height={24} className="object-contain" />
+                                <Image src="/carbon_logo.png" alt="CarbonX Logo" width={90} height={24} className="object-contain" />
                             </div>
                             <button
                                 onClick={() => setIsOpen(false)}

@@ -1,15 +1,25 @@
 "use client";
 
 import { Home, Activity, Leaf, Settings, Download } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import Dock from './Dock';
 
 export function NavigationDock() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated } = useAuth();
+
+  const hideNav = pathname === '/login' || (!isAuthenticated && pathname === '/');
+
+  if (hideNav) return null;
+
   const items = [
-    { icon: <Home size={24} />, label: 'Dashboard', onClick: () => window.location.hash = 'dashboard' },
-    { icon: <Activity size={24} />, label: 'Machines Health', onClick: () => window.location.hash = 'health' },
-    { icon: <Leaf size={24} />, label: 'Carbon Analytics', onClick: () => window.location.hash = 'carbon' },
-    { icon: <Download size={24} />, label: 'Reports (CSV/PDF)', onClick: () => window.location.hash = 'reports' },
-    { icon: <Settings size={24} />, label: 'Settings', onClick: () => window.location.hash = 'settings' },
+    { icon: <Home size={24} />, label: 'Dashboard', onClick: () => router.push('/dashboard') },
+    { icon: <Activity size={24} />, label: 'Machines Health', onClick: () => router.push('/machines') },
+    { icon: <Leaf size={24} />, label: 'Carbon Analytics', onClick: () => router.push('/carbon') },
+    { icon: <Download size={24} />, label: 'Reports (CSV/PDF)', onClick: () => router.push('/reports') },
+    { icon: <Settings size={24} />, label: 'Settings', onClick: () => router.push('/settings') },
   ];
 
   return (

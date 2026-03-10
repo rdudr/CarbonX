@@ -35,23 +35,31 @@ function generateMockMachineData(nodeConfigs: any[]): TXEnergyUnit[] {
     });
 }
 
-const ZONES = ['Zone-A', 'Zone-B', 'Zone-C'];
-
 export default function MachinesPage() {
     const { config } = useSystem();
     const [machines, setMachines] = useState<TXEnergyUnit[]>([]);
-    const [activeZone, setActiveZone] = useState('Zone-A');
     const [mounted, setMounted] = useState(false);
+
+    const ZONES = Array.from(new Set(config.txUnits.map(tx => tx.name)));
+    const [activeZone, setActiveZone] = useState('');
 
     useEffect(() => {
         setMounted(true);
+        if (ZONES.length > 0 && !activeZone) setActiveZone(ZONES[0]);
+
+        const mappedNodes = config.txUnits.flatMap(tx => tx.devices.map(d => ({
+            ...d,
+            zone: tx.name,
+            targetKw: d.power / 1000
+        })));
+
         const poll = () => {
-            setMachines(generateMockMachineData(config.nodes));
+            setMachines(generateMockMachineData(mappedNodes));
         };
         poll();
         const interval = setInterval(poll, 5000);
         return () => clearInterval(interval);
-    }, [config.nodes]);
+    }, [config.txUnits]);
 
     if (!mounted) return null;
 

@@ -42,14 +42,14 @@ export default function ReportsPage() {
     const multiplier = getPeriodMultiplier();
     const avgEfficiency = 92 + (Math.random() * 6);
     const cumulativeKwh = Math.round(12482 * multiplier * (0.9 + Math.random() * 0.2));
-    const activeNodes = config.nodes.length;
+    const activeNodes = config.txUnits.length;
     const co2Saved = Math.round(420 * multiplier);
 
     // Health Distribution Simulation
     const healthDist = {
-        good: Math.floor(config.nodes.length * 0.8),
-        warning: Math.ceil(config.nodes.length * 0.15),
-        critical: Math.max(0, config.nodes.length - Math.floor(config.nodes.length * 0.8) - Math.ceil(config.nodes.length * 0.15))
+        good: Math.floor(config.txUnits.length * 0.8),
+        warning: Math.ceil(config.txUnits.length * 0.15),
+        critical: Math.max(0, config.txUnits.length - Math.floor(config.txUnits.length * 0.8) - Math.ceil(config.txUnits.length * 0.15))
     };
 
     // AI Insights based on period
@@ -64,15 +64,15 @@ export default function ReportsPage() {
     const exportToCSV = () => {
         setExporting('csv');
         const headers = ['Node ID', 'Machine Name', 'Zone', 'Phase Type', 'Target kW', 'Status', 'Period Efficiency'];
-        const rows = config.nodes.map(node => [
-            node.id,
-            node.name,
-            node.zone,
-            node.phaseType,
-            node.targetKw,
+        const rows = config.txUnits.flatMap(tx => tx.devices.map(d => [
+            d.id,
+            d.name,
+            tx.name, // using TX name directly
+            d.phaseType,
+            d.power / 1000, // Watts to kW
             'Online',
             `${(90 + Math.random() * 8).toFixed(1)}%`
-        ]);
+        ]));
 
         const csvContent = [
             [`Report Period: ${reportPeriod.toUpperCase()}`],
@@ -124,11 +124,11 @@ export default function ReportsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        ${config.nodes.map(n => `
+                        ${config.txUnits.flatMap(tx => tx.devices.map(d => `
                             <tr>
-                                <td>${n.id}</td><td>${n.name}</td><td>${n.zone}</td><td>${n.phaseType}</td><td>${n.targetKw}</td>
+                                <td>${d.id}</td><td>${d.name}</td><td>${tx.name}</td><td>${d.phaseType}</td><td>${(d.power / 1000).toFixed(1)}</td>
                             </tr>
-                        `).join('')}
+                        `)).join('')}
                     </tbody>
                 </table>
             </body>
@@ -240,9 +240,9 @@ export default function ReportsPage() {
                 <Card className="glass-card p-8 border-none lg:col-span-2 shadow-sm md:rounded-[35px] rounded-3xl">
                     <h3 className="text-xl font-black text-brand-green-dark uppercase italic mb-8">Machine Health Distribution</h3>
                     <div className="flex gap-4 h-12">
-                        <div style={{ width: `${(healthDist.good / config.nodes.length) * 100}%` }} className="bg-emerald-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-emerald-500/20">GOOD</div>
-                        <div style={{ width: `${(healthDist.warning / config.nodes.length) * 100}%` }} className="bg-orange-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-orange-500/20">ATTN</div>
-                        {healthDist.critical > 0 && <div style={{ width: `${(healthDist.critical / config.nodes.length) * 100}%` }} className="bg-red-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-red-500/20">ERR</div>}
+                        <div style={{ width: `${(healthDist.good / Math.max(1, config.txUnits.length)) * 100}%` }} className="bg-emerald-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-emerald-500/20">GOOD</div>
+                        <div style={{ width: `${(healthDist.warning / Math.max(1, config.txUnits.length)) * 100}%` }} className="bg-orange-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-orange-500/20">ATTN</div>
+                        {healthDist.critical > 0 && <div style={{ width: `${(healthDist.critical / Math.max(1, config.txUnits.length)) * 100}%` }} className="bg-red-500 rounded-xl flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-red-500/20">ERR</div>}
                     </div>
                     <div className="mt-6 flex justify-between text-[10px] font-black text-brand-green-dark/40 uppercase tracking-widest">
                         <span>Nodes Operational: {activeNodes}</span>
@@ -294,25 +294,27 @@ export default function ReportsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {config.nodes.map((node) => (
-                                <TableRow key={node.id} className="hover:bg-brand-green-light/[0.03] border-black/5 h-16 group transition-colors">
-                                    <TableCell className="font-black text-brand-green-dark px-8">{node.id}</TableCell>
-                                    <TableCell className="font-bold text-brand-green-dark/80 italic">{node.name}</TableCell>
+                            {config.txUnits.flatMap(tx => tx.devices.map(d => (
+                                <TableRow key={d.id} className="hover:bg-brand-green-light/[0.03] border-black/5 h-16 group transition-colors">
+                                    <TableCell className="font-black text-brand-green-dark px-8">{d.id}</TableCell>
+                                    <TableCell className="font-bold text-brand-green-dark/80 italic">{d.name}</TableCell>
                                     <TableCell>
-                                        <Badge variant="outline" className="bg-emerald-500/10 border-emerald-500/20 text-emerald-700 font-black text-[10px] py-1">
-                                            {node.zone}
+                                        <Badge variant="outline" className="border-brand-green-dark/10 text-brand-green-dark/60 font-black">{tx.name}</Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge className={cn("font-black text-[10px] tracking-widest", d.phaseType === 'three' ? "bg-orange-600" : "bg-blue-600")}>
+                                            {d.phaseType === 'three' ? '3-PHASE' : '1-PHASE'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="font-bold text-brand-green-dark/60 uppercase text-[10px] tracking-widest">{node.phaseType}-Phase</TableCell>
-                                    <TableCell className="font-black text-brand-green-dark">{node.targetKw} kW</TableCell>
+                                    <TableCell className="font-black text-brand-green-dark">{(d.power / 1000).toFixed(1)} <span className="text-[10px] opacity-40">kW</span></TableCell>
                                     <TableCell className="text-right px-8">
-                                        <div className="flex items-center justify-end gap-2 text-emerald-600 font-black text-[10px] uppercase">
+                                        <div className="flex items-center justify-end gap-2">
                                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                            Live
+                                            <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">Active</span>
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )))}
                         </TableBody>
                     </Table>
                 </CardContent>

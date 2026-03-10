@@ -1,0 +1,43 @@
+﻿
+> carbonx@1.0.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (:  
+  String) [], RemoteExc   
+ eption
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+> Build error occurred
+Error: Turbopack build 
+failed with 1 errors:
+./src/app/page.tsx
+Reading source code for 
+parsing failed
+An unexpected error 
+happened while trying to 
+read the source code to 
+parse: failed to convert 
+rope into string
+
+Caused by:
+- invalid utf-8 sequence 
+of 1 bytes from index 4776
+
+
+    at ignore-listed 
+frames

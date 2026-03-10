@@ -100,9 +100,14 @@ export default function DashboardPage() {
 
     useEffect(() => {
         if (!mounted) return;
+        const mappedNodes = config.txUnits.flatMap(tx => tx.devices.map(d => ({
+            ...d,
+            zone: tx.name,
+            targetKw: d.power / 1000
+        })));
         const poll = () => {
             setTick((t) => {
-                const newGateway = generateMockGateway(t, config.nodes);
+                const newGateway = generateMockGateway(t, mappedNodes);
                 setGateway(newGateway);
                 debouncedLossCheck(newGateway);
                 return t + 1;
@@ -111,7 +116,7 @@ export default function DashboardPage() {
         poll();
         const interval = setInterval(poll, 5000);
         return () => clearInterval(interval);
-    }, [mounted, debouncedLossCheck, config.nodes]);
+    }, [mounted, debouncedLossCheck, config.txUnits]);
 
     if (!mounted || !gateway) return <div className="p-20 text-center">Loading CarbonX Dashboard...</div>;
 
@@ -128,7 +133,7 @@ export default function DashboardPage() {
                 <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
                 <div className="flex items-center gap-5">
                     <div className="w-18 h-18 rounded-3xl bg-brand-green-light/5 flex items-center justify-center border border-brand-green-light/20 shadow-inner group-hover:bg-brand-green-light/10 transition-colors">
-                        <Image src="/logo.png" alt="Logo" width={50} height={50} className="group-hover:rotate-12 transition-transform duration-500 object-contain" />
+                        <Image src="/carbon_logo.png" alt="Logo" width={50} height={50} className="group-hover:rotate-12 transition-transform duration-500 object-contain" />
                     </div>
                     <div>
                         <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-brand-green-dark leading-none">Command Center</h1>

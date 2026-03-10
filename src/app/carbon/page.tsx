@@ -47,18 +47,17 @@ export default function CarbonAnalyticsPage() {
     if (!mounted) return null;
 
     // Derived Real-time Values
-    const totalKwh = config.nodes.reduce((acc, n) => acc + (n.targetKw * 0.8), 0) * (1 + (Math.random() - 0.5) * 0.1);
+    const totalKwh = config.txUnits.reduce((acc, tx) => acc + tx.devices.reduce((dAcc, d) => dAcc + d.power / 1000 * 0.8, 0), 0) * (1 + (Math.random() - 0.5) * 0.1);
     const co2Kg = kwhToCo2Kg(totalKwh);
     const treesNeeded = (co2Kg * 365) / CO2_PER_TREE_YEAR;
 
     // Dynamic progress based on targetKw vs current output (simple simulation)
     const neutralityProgress = Math.min(Math.max(65 + (Math.random() * 5), 0), 100);
 
-    const zoneData = [
-        { name: 'Zone-A', value: config.nodes.filter(n => n.zone === 'Zone-A').reduce((acc, n) => acc + n.targetKw, 0) },
-        { name: 'Zone-B', value: config.nodes.filter(n => n.zone === 'Zone-B').reduce((acc, n) => acc + n.targetKw, 0) },
-        { name: 'Zone-C', value: config.nodes.filter(n => n.zone === 'Zone-C').reduce((acc, n) => acc + n.targetKw, 0) },
-    ].filter(z => z.value > 0);
+    const zoneData = config.txUnits.map(tx => ({
+        name: tx.name,
+        value: tx.devices.reduce((acc, d) => acc + d.power / 1000, 0)
+    })).filter(z => z.value > 0);
 
     return (
         <div className="fade-in space-y-8 pb-20">

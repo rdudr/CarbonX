@@ -35,7 +35,7 @@ export default function LoginPage() {
                 {/* Visual Branding Section */}
                 <div className="space-y-8 text-center lg:text-left">
                     <div className="inline-block p-4 glass rounded-3xl border border-brand-green-light/20 mb-4 animate-bounce-slow">
-                        <Image src="/logo.png" alt="CarbonX Logo" width={180} height={50} className="object-contain" priority />
+                        <Image src="/carbon_logo.png" alt="CarbonX Logo" width={180} height={50} className="object-contain" priority />
                     </div>
                     <div>
                         <h1 className="text-5xl lg:text-7xl font-black text-brand-green-dark tracking-tighter uppercase italic leading-[0.9]">

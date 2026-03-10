@@ -1,0 +1,148 @@
+﻿
+> carbonx@1.0.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program Files\
+nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (:String) [   
+ ], RemoteExceptio    
+n
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+> Build error occurred
+Error: Turbopack 
+build failed with 1 
+errors:
+./src/components/ui/ta
+bs.tsx:4:1
+Module not found: 
+Can't resolve 
+'@radix-ui/react-tabs'
+[0m [90m 2 |[39m
+ [90m 3 |[39m 
+[36mimport[39m 
+[33m*[39m 
+[36mas[39m 
+[33mReact[39m 
+[36mfrom[39m 
+[32m"react"[39m
+[31m[1m>[22m[39m[
+90m 4 |[39m 
+[36mimport[39m 
+[33m*[39m 
+[36mas[39m [33mTabs
+Primitive[39m 
+[36mfrom[39m [32m"@
+radix-ui/react-tabs"[
+39m
+ [90m   |[39m [31m
+[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m
+[31m[1m^[22m[39m[
+31m[1m^[22m[39m[31
+m[1m^[22m[39m[31m
+[1m^[22m[39m[31m[1
+m^[22m[39m[31m[1m^
+[22m[39m[31m[1m^[
+22m[39m[31m[1m^[22
+m[39m[31m[1m^[22m
+[39m[31m[1m^[22m[3
+9m[31m[1m^[22m[39m
+[31m[1m^[22m[39m
+ [90m 5 |[39m
+ [90m 6 |[39m 
+[36mimport[39m { cn 
+} [36mfrom[39m [32m
+"@/lib/utils"[39m
+ [90m 7 |[39m[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./src/components/u
+i/tabs.tsx [Client 
+Component Browser]
+    ./src/app/machines
+/page.tsx [Client 
+Component Browser]
+    ./src/app/machines
+/page.tsx [Server 
+Component]
+
+  Client Component 
+SSR:
+    ./src/components/u
+i/tabs.tsx [Client 
+Component SSR]
+    ./src/app/machines
+/page.tsx [Client 
+Component SSR]
+    ./src/app/machines
+/page.tsx [Server 
+Component]
+
+https://nextjs.org/doc
+s/messages/module-not-
+found
+
+
+    at <unknown> (./sr
+c/components/ui/tabs.t
+sx:4:1)
+    at <unknown> (http
+s://nextjs.org/docs/me
+ssages/module-not-foun
+d)

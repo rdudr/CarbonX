@@ -32,7 +32,7 @@ export default function EnergyMonitorPage() {
     if (!mounted) return null;
 
     // Simulation Data
-    const totalKw = config.nodes.reduce((acc, n) => acc + (n.targetKw * (0.7 + Math.random() * 0.3)), 0);
+    const totalKw = config.txUnits.reduce((acc, tx) => acc + tx.devices.reduce((dAcc, d) => dAcc + (d.power / 1000) * (0.7 + Math.random() * 0.3), 0), 0);
     const rxKwh = totalKw * 1.08; // Simulate 8% leakage/loss at RX level
     const lossKw = rxKwh - totalKw;
     const lossPercent = (lossKw / rxKwh) * 100;
