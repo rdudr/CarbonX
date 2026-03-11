@@ -2,42 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSystem } from '@/context/SystemContext';
+import { useTelemetry } from '@/context/TelemetryContext';
 import { GaugeChart } from '@/components/GaugeChart';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Activity, ShieldCheck, Zap, Thermometer, Info } from 'lucide-react';
+import { Activity, ShieldCheck, Zap, Thermometer, Info, Wind } from 'lucide-react';
 import type { TXEnergyUnit } from '@/types/energy';
 import { cn } from '@/lib/utils';
 
-// Mock live data generator for gauges
-function generateMockMachineData(nodeConfigs: any[]): TXEnergyUnit[] {
-    const jitter = () => (Math.random() - 0.5) * 2;
-    return nodeConfigs.map(config => {
-        const isThreePhase = config.phaseType === 'three';
-        const basePower = (config.id === 'TX-3') ? 45.1 : (config.id === 'TX-4') ? 64.8 : 12.4;
-
-        return {
-            nodeId: config.id,
-            name: config.name,
-            zone: config.zone,
-            phaseType: config.phaseType,
-            targetKw: config.targetKw,
-            kwh: 500, // Static for health page
-            kvarh: 200,
-            currentKw: basePower + jitter() * 2,
-            phaseVoltages: isThreePhase ? [400 + jitter(), 402 + jitter(), 398 + jitter()] : [230 + jitter(), 0, 0],
-            phaseCurrents: isThreePhase ? [18 + jitter(), 17 + jitter(), 19 + jitter()] : [25 + jitter(), 0, 0],
-            powerFactor: 0.94 + jitter() * 0.02,
-            temperature: 55 + jitter() * 5,
-            timestamp: new Date().toISOString(),
-        };
-    });
-}
-
 export default function MachinesPage() {
     const { config } = useSystem();
-    const [machines, setMachines] = useState<TXEnergyUnit[]>([]);
+    const { nodeData, loading } = useTelemetry();
     const [mounted, setMounted] = useState(false);
 
     const ZONES = Array.from(new Set(config.txUnits.map(tx => tx.name)));
@@ -46,30 +22,17 @@ export default function MachinesPage() {
     useEffect(() => {
         setMounted(true);
         if (ZONES.length > 0 && !activeZone) setActiveZone(ZONES[0]);
+    }, [ZONES, activeZone]);
 
-        const mappedNodes = config.txUnits.flatMap(tx => tx.devices.map(d => ({
-            ...d,
-            zone: tx.name,
-            targetKw: d.power / 1000
-        })));
+    if (!mounted || loading) return <div className="p-20 text-center">Loading Machine Health...</div>;
 
-        const poll = () => {
-            setMachines(generateMockMachineData(mappedNodes));
-        };
-        poll();
-        const interval = setInterval(poll, 5000);
-        return () => clearInterval(interval);
-    }, [config.txUnits]);
-
-    if (!mounted) return null;
-
-    const filteredMachines = machines.filter(m => m.zone === activeZone);
+    const filteredMachines = nodeData.filter(m => m.zone === activeZone);
 
     return (
         <div className="fade-in space-y-8 pb-20">
             {/* Header Area */}
-            <div className="glass-thick p-6 md:p-10 md:rounded-[50px] rounded-[35px] flex flex-col lg:flex-row justify-between items-start lg:items-center shadow-sm relative overflow-hidden group">
-                <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
+            <div className="glass-thick p-6 md:p-10 md:rounded-[50px] rounded-[35px] flex flex-col lg:flex-row justify-between items-start lg:items-center shadow-sm relative group">
+                <div className="absolute inset-0 grid-overlay opacity-10 -z-10 rounded-[inherit] overflow-hidden" />
                 <div className="relative z-10 space-y-2">
                     <h1 className="text-3xl md:text-5xl font-black tracking-tighter italic uppercase text-brand-green-dark flex items-center gap-4">
                         <Activity className="text-brand-green-light" size={36} />
@@ -81,7 +44,7 @@ export default function MachinesPage() {
                 <div className="mt-8 lg:mt-0 flex gap-4 relative z-10">
                     <div className="glass-thick bg-brand-green-light/10 border-brand-green-light/20 px-8 py-4 rounded-3xl shadow-sm">
                         <div className="text-[10px] font-black opacity-40 uppercase tracking-[0.3em] text-brand-green-dark">Nodes Operational</div>
-                        <div className="text-3xl font-black text-brand-green-dark italic">{filteredMachines.length} <span className="text-sm opacity-40 uppercase">/ {machines.length} Total</span></div>
+                        <div className="text-3xl font-black text-brand-green-dark italic">{filteredMachines.length} <span className="text-sm opacity-40 uppercase">/ {nodeData.length} Total</span></div>
                     </div>
                 </div>
 
@@ -161,27 +124,29 @@ export default function MachinesPage() {
                                             <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 md:rounded-3xl rounded-2xl bg-black/5">
                                                 <div className="p-4">
                                                     <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
-                                                        <Thermometer size={14} className="text-orange-500" /> Temperature
+                                                        <Activity size={14} className="text-orange-500" /> Vibration
+                                                    </div>
+                                                    <div className="font-black text-brand-green-dark">{machine.vibration.toFixed(2)} <span className="text-[10px] opacity-40">mm/s</span></div>
+                                                </div>
+                                                <div className="p-4">
+                                                    <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
+                                                        <Wind size={14} className="text-brand-yellow" /> Carbon PPM
+                                                    </div>
+                                                    <div className="font-black text-brand-green-dark">{machine.ppm} <span className="text-[10px] opacity-40">PPM</span></div>
+                                                </div>
+                                                <div className="p-4">
+                                                    <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
+                                                        <Thermometer size={14} className="text-blue-500" /> Temperature
                                                     </div>
                                                     <div className="font-black text-brand-green-dark">{machine.temperature.toFixed(1)}°C</div>
                                                 </div>
                                                 <div className="p-4">
                                                     <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
-                                                        <Zap size={14} className="text-brand-yellow" /> Power Factor
+                                                        <Info size={14} className="text-emerald-500" /> Heartbeat
                                                     </div>
-                                                    <div className="font-black text-brand-green-dark">{machine.powerFactor.toFixed(2)}</div>
-                                                </div>
-                                                <div className="p-4">
-                                                    <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
-                                                        <Activity size={14} className="text-blue-500" /> Active Frequency
+                                                    <div className="font-black text-brand-green-dark/40 text-[10px] truncate">
+                                                        {new Date(machine.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                                                     </div>
-                                                    <div className="font-black text-brand-green-dark">50.02 Hz</div>
-                                                </div>
-                                                <div className="p-4">
-                                                    <div className="flex items-center gap-2 text-[10px] font-black opacity-40 uppercase mb-1">
-                                                        <Info size={14} className="text-emerald-500" /> Last Sync
-                                                    </div>
-                                                    <div className="font-black text-brand-green-dark/40 text-[11px]">Just Now</div>
                                                 </div>
                                             </div>
                                         </CardContent>

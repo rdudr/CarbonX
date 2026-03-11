@@ -40,6 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# kiro
-.kiro/
-.kiro
+# kiro (Allowing tasks and specs)
+task.md
+scripts/serviceAccountKey.json

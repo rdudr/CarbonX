@@ -55,6 +55,13 @@ export function GaugeChart({ value, max, label, unit, className }: GaugeChartPro
                     viewBox="0 0 200 100"
                     className="absolute top-0 left-0"
                 >
+                    <defs>
+                        <filter id="glowGauge" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+
                     {/* Background Track (Gray) */}
                     <path
                         d="M 20,100 A 80,80 0 0,1 180,100"
@@ -62,38 +69,35 @@ export function GaugeChart({ value, max, label, unit, className }: GaugeChartPro
                         stroke="#f1f5f9"
                         strokeWidth={strokeWidth}
                         strokeLinecap="round"
+                        opacity={0.3}
                     />
 
                     {/* Progress Track (Colored Zones) */}
-                    {/* Green Segment (0-50%) */}
                     <path
                         d="M 20,100 A 80,80 0 0,1 100,20"
                         fill="none"
                         stroke="#10b981"
                         strokeWidth={strokeWidth}
+                        filter="url(#glowGauge)"
                     />
-                    {/* Yellow/Lime Segment (50-100%) */}
                     <path
                         d="M 100,20 A 80,80 0 0,1 180,100"
                         fill="none"
-                        stroke="#84cc16"
+                        stroke="#fb923c"
                         strokeWidth={strokeWidth}
+                        filter="url(#glowGauge)"
                     />
-
-                    {/* Progress Overlay (This hides the color segments based on value) */}
-                    {/* In a real speedometer we want the segments visible, so we don't need a dynamic stroke here usually, 
-                        just a needle. But yours shows colors. */}
                 </svg>
 
                 {/* The Needle */}
                 <div
-                    className="absolute bottom-0 left-1/2 w-1.5 h-16 bg-blue-500 rounded-full origin-bottom transition-transform duration-1000 ease-out"
+                    className="absolute bottom-0 left-1/2 w-1 h-18 bg-blue-500 rounded-full origin-bottom transition-transform duration-1000 ease-out"
                     style={{
                         transform: `translateX(-50%) rotate(${rotation}deg)`,
-                        boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)'
+                        boxShadow: '0 0 15px rgba(59, 130, 246, 0.8)',
                     }}
                 >
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-blue-600 rounded-full border-2 border-white" />
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-4 bg-blue-600 rounded-full border-2 border-white shadow-lg" />
                 </div>
 
                 {/* Min/Max Labels */}

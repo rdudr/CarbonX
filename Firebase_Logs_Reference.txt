@@ -1,7 +1,7 @@
 CarbonX AI Telemetry Log Structure (JSON/Firebase)
 =================================================
 
-The following structure is used for 'ai_logs' within Firestore or as JSON exports.
+The following structure is used for 'AI_Logs' within Firestore or as JSON exports.
 
 {
   "timestamp": "ISO-8601 String", 
@@ -30,7 +30,7 @@ The following structure is used for 'ai_logs' within Firestore or as JSON export
 
 Example Firebase Query for Live Feed:
 -------------------------------------
-db.collection('ai_logs')
+db.collection('AI_Logs')
   .orderBy('timestamp', 'desc')
   .limit(20)
   .onSnapshot(snapshot => {

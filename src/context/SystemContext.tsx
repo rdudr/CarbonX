@@ -64,6 +64,7 @@ const SystemContext = createContext<SystemContextType | undefined>(undefined);
 
 export function SystemProvider({ children }: { children: React.ReactNode }) {
     const [config, setConfig] = useState<SystemConfig>(DEFAULT_CONFIG);
+    const [initialized, setInitialized] = useState(false);
 
     useEffect(() => {
         const saved = localStorage.getItem('carbonx_advanced_config');
@@ -75,11 +76,14 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
                 console.error('Failed to load config', e);
             }
         }
+        setInitialized(true);
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('carbonx_advanced_config', JSON.stringify(config));
-    }, [config]);
+        if (initialized) {
+            localStorage.setItem('carbonx_advanced_config', JSON.stringify(config));
+        }
+    }, [config, initialized]);
 
     const updateConfig = (updates: Partial<SystemConfig>) => {
         setConfig(prev => ({ ...prev, ...updates }));
@@ -106,8 +110,8 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
     const addDevice = (txId: string, device: DeviceSpec) => {
         setConfig(prev => ({
             ...prev,
-            txUnits: prev.txUnits.map(tx => tx.id === txId 
-                ? { ...tx, devices: [...tx.devices, device] } 
+            txUnits: prev.txUnits.map(tx => tx.id === txId
+                ? { ...tx, devices: [...tx.devices, device] }
                 : tx
             )
         }));
@@ -116,8 +120,8 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
     const updateDevice = (txId: string, deviceId: string, updates: Partial<DeviceSpec>) => {
         setConfig(prev => ({
             ...prev,
-            txUnits: prev.txUnits.map(tx => tx.id === txId 
-                ? { ...tx, devices: tx.devices.map(d => d.id === deviceId ? { ...d, ...updates } : d) } 
+            txUnits: prev.txUnits.map(tx => tx.id === txId
+                ? { ...tx, devices: tx.devices.map(d => d.id === deviceId ? { ...d, ...updates } : d) }
                 : tx
             )
         }));
@@ -126,18 +130,18 @@ export function SystemProvider({ children }: { children: React.ReactNode }) {
     const deleteDevice = (txId: string, deviceId: string) => {
         setConfig(prev => ({
             ...prev,
-            txUnits: prev.txUnits.map(tx => tx.id === txId 
-                ? { ...tx, devices: tx.devices.filter(d => d.id !== deviceId) } 
+            txUnits: prev.txUnits.map(tx => tx.id === txId
+                ? { ...tx, devices: tx.devices.filter(d => d.id !== deviceId) }
                 : tx
             )
         }));
     };
 
     return (
-        <SystemContext.Provider value={{ 
-            config, updateConfig, 
+        <SystemContext.Provider value={{
+            config, updateConfig,
             addTXUnit, updateTXUnit, deleteTXUnit,
-            addDevice, updateDevice, deleteDevice 
+            addDevice, updateDevice, deleteDevice
         }}>
             {children}
         </SystemContext.Provider>

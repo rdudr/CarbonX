@@ -55,6 +55,12 @@ export interface TXEnergyUnit {
     powerFactor: number;
     /** Machine operating temperature in °C */
     temperature: number;
+    /** Vibration levels in mm/s (Velocity RMS) */
+    vibration: number;
+    /** Calculated PPM (Parts Per Million) for CO2/Gas */
+    ppm: number;
+    /** Calculated machine status based on activity */
+    isOnline: boolean;
     /** ISO timestamp of this reading */
     timestamp: string;
 }

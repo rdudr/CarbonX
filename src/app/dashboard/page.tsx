@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -16,56 +15,18 @@ import {
     PieChart, Pie, Cell,
 } from 'recharts';
 import { NotificationOverlay } from '@/components/NotificationSystem';
+import { FormulaIntelligence } from '@/components/FormulaIntelligence';
 import { useEnergyNotifications } from '@/hooks/useEnergyNotifications';
 import { calculateEnergyLoss, calculateMachineHealth, kwhToCo2Kg, getStatusColor } from '@/lib/energyCalculations';
 import { debounce } from '@/lib/debounce';
 import { cn } from '@/lib/utils';
 import { useSystem } from '@/context/SystemContext';
+import { useTelemetry } from '@/context/TelemetryContext';
 import type { RXEnergyUnit, TXEnergyUnit } from '@/types/energy';
 
 const COLORS = ['#10b981', '#fb923c', '#3b82f6', '#facc15'];
 
-function generateMockGateway(tick: number, nodeConfigs: any[]): RXEnergyUnit {
-    const jitter = () => (Math.random() - 0.5) * 2;
-    const txNodes: TXEnergyUnit[] = nodeConfigs.map(config => {
-        const baseKwh = (config.id === 'TX-1') ? 600 : (config.id === 'TX-2') ? 480 : (config.id === 'TX-3') ? 820 : 420;
-        const currentKw = (config.id === 'TX-1') ? 12.4 : (config.id === 'TX-2') ? 8.2 : (config.id === 'TX-3') ? 45.1 : 64.8;
-
-        const isThreePhase = config.phaseType === 'three';
-        const phaseVoltages: [number, number, number] = isThreePhase ? [400 + jitter(), 402 + jitter(), 398 + jitter()] : [230 + jitter(), 0, 0];
-        const phaseCurrents: [number, number, number] = isThreePhase ? [18 + jitter(), 17 + jitter(), 19 + jitter()] : [25 + jitter(), 0, 0];
-
-        return {
-            nodeId: config.id,
-            name: config.name,
-            zone: config.zone,
-            phaseType: config.phaseType,
-            targetKw: config.targetKw,
-            kwh: baseKwh + jitter() * 10,
-            kvarh: 180 + jitter() * 5,
-            currentKw: currentKw + jitter(),
-            phaseVoltages,
-            phaseCurrents,
-            powerFactor: 0.92 + jitter() * 0.05,
-            temperature: 60 + jitter() * 5,
-            timestamp: new Date().toISOString(),
-        };
-    });
-
-    return {
-        gatewayId: 'RX-PLANT-01',
-        name: 'Main Plant Gateway',
-        totalKwh: txNodes.reduce((acc, n) => acc + n.kwh, 0) * 1.05 + jitter() * 10,
-        totalKvarh: 890 + jitter() * 10,
-        voltage: 400 + jitter() * 5,
-        current: 125 + jitter() * 3,
-        powerFactor: 0.91 + jitter() * 0.03,
-        timestamp: new Date().toISOString(),
-        txNodes,
-    };
-}
-
-const historicalTrend = [
+const historicalTrendPlaceholder = [
     { time: '00:00', kwh: 120, predicted: 125 },
     { time: '04:00', kwh: 110, predicted: 115 },
     { time: '08:00', kwh: 350, predicted: 340 },
@@ -76,10 +37,9 @@ const historicalTrend = [
 
 export default function DashboardPage() {
     const [mounted, setMounted] = useState(false);
-    const [gateway, setGateway] = useState<RXEnergyUnit | null>(null);
-    const [tick, setTick] = useState(0);
     const { addNotification } = useEnergyNotifications();
     const { config } = useSystem();
+    const { gatewayData, loading, isLive } = useTelemetry();
 
     const debouncedLossCheck = useRef(
         debounce((gw: RXEnergyUnit) => {
@@ -99,38 +59,27 @@ export default function DashboardPage() {
     useEffect(() => { setMounted(true); }, []);
 
     useEffect(() => {
-        if (!mounted) return;
-        const mappedNodes = config.txUnits.flatMap(tx => tx.devices.map(d => ({
-            ...d,
-            zone: tx.name,
-            targetKw: d.power / 1000
-        })));
-        const poll = () => {
-            setTick((t) => {
-                const newGateway = generateMockGateway(t, mappedNodes);
-                setGateway(newGateway);
-                debouncedLossCheck(newGateway);
-                return t + 1;
-            });
-        };
-        poll();
-        const interval = setInterval(poll, 5000);
-        return () => clearInterval(interval);
-    }, [mounted, debouncedLossCheck, config.txUnits]);
+        if (mounted && gatewayData) {
+            debouncedLossCheck(gatewayData);
+        }
+    }, [mounted, gatewayData, debouncedLossCheck]);
 
-    if (!mounted || !gateway) return <div className="p-20 text-center">Loading CarbonX Dashboard...</div>;
+    if (!mounted || loading) return <div className="p-20 text-center">Loading CarbonX Dashboard...</div>;
+    if (!gatewayData) return <div className="p-20 text-center text-brand-green-dark/40">Waiting for Telemetry Feed...</div>;
+
+    const gateway = gatewayData;
 
     const lossResult = calculateEnergyLoss(gateway);
     const totalCo2 = kwhToCo2Kg(gateway.totalKwh);
-    const trendData = [...historicalTrend, { time: 'Now', kwh: Math.round(gateway.totalKwh / 10), predicted: 285 }];
+    const trendData = [...historicalTrendPlaceholder, { time: 'Now', kwh: Math.round(gateway.totalKwh / 10), predicted: 285 }];
     const pieData = gateway.txNodes.map((n) => ({ name: n.nodeId, value: Math.round(n.kwh) }));
 
     return (
         <div className="space-y-6 pb-10 fade-in px-4 md:px-0">
             <NotificationOverlay />
 
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center p-8 glass-thick md:rounded-[50px] rounded-[35px] shadow-sm border border-brand-green-light/10 relative overflow-hidden group">
-                <div className="absolute inset-0 grid-overlay opacity-10 -z-10" />
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center p-8 glass-thick md:rounded-[50px] rounded-[35px] shadow-sm border border-brand-green-light/10 relative group">
+                <div className="absolute inset-0 grid-overlay opacity-10 -z-10 rounded-[inherit] overflow-hidden" />
                 <div className="flex items-center gap-5">
                     <div className="w-18 h-18 rounded-3xl bg-brand-green-light/5 flex items-center justify-center border border-brand-green-light/20 shadow-inner group-hover:bg-brand-green-light/10 transition-colors">
                         <Image src="/carbon_logo.png" alt="Logo" width={50} height={50} className="group-hover:rotate-12 transition-transform duration-500 object-contain" />
@@ -140,7 +89,8 @@ export default function DashboardPage() {
                         <p className="text-brand-green-dark/40 text-[10px] font-black uppercase tracking-[0.4em] mt-2">Node Protocol: {gateway.name}</p>
                     </div>
                 </div>
-                <div className="mt-6 lg:mt-0 flex flex-wrap gap-3">
+                <div className="mt-6 lg:mt-0 flex flex-wrap gap-3 items-center">
+                    <FormulaIntelligence />
                     <Badge variant="outline" className="bg-brand-green-light/10 border-brand-green-light/20 text-brand-green-light px-6 py-2.5 rounded-full font-black italic uppercase tracking-widest text-[10px] flex items-center shadow-sm">
                         <span className="w-2.5 h-2.5 rounded-full bg-brand-green-light animate-pulse mr-3" />
                         Live Rx/Tx
@@ -209,107 +159,190 @@ export default function DashboardPage() {
                 </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="glass-card md:rounded-[40px] rounded-3xl border-brand-green-light/5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Active Device Monitor */}
+                <Card className="glass-card md:rounded-[40px] rounded-3xl border-brand-green-light/5 lg:col-span-1">
                     <CardHeader className="pt-8 px-8">
-                        <CardTitle className="text-brand-green-dark text-xl font-black italic uppercase tracking-tight">Forensic Consumption Trend</CardTitle>
-                        <p className="text-[10px] font-bold text-brand-green-dark/40 uppercase tracking-widest italic">Live vs AI Predictive Modeling</p>
+                        <CardTitle className="text-brand-green-dark text-xl font-black italic uppercase tracking-tight flex items-center gap-2">
+                            <Activity className="text-brand-green-light" size={20} />
+                            Active Monitor
+                        </CardTitle>
+                        <p className="text-[10px] font-bold text-brand-green-dark/40 uppercase tracking-widest italic">Live Hardware Heartbeat</p>
                     </CardHeader>
-                    <CardContent className="h-[320px] pb-8 px-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={trendData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#000" strokeOpacity={0.05} vertical={false} />
-                                <XAxis dataKey="time" stroke="#000" strokeOpacity={0.4} tick={{ fontSize: 10, fontWeight: 900 }} axisLine={false} />
-                                <YAxis stroke="#000" strokeOpacity={0.4} tick={{ fontSize: 10, fontWeight: 900 }} axisLine={false} />
-                                <RechartsTooltip
-                                    contentStyle={{
-                                        borderRadius: '24px',
-                                        border: 'none',
-                                        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)',
-                                        background: 'rgba(255,255,255,0.8)',
-                                        backdropFilter: 'blur(20px)',
-                                        fontWeight: '900',
-                                        fontSize: '12px',
-                                        textTransform: 'uppercase'
-                                    }}
-                                />
-                                <Line type="step" dataKey="kwh" stroke="#10b981" strokeWidth={5} dot={{ r: 6, fill: '#10b981', strokeWidth: 4, stroke: '#fff' }} strokeLinecap="round" />
-                                <Line type="monotone" dataKey="predicted" stroke="#facc15" strokeWidth={3} strokeDasharray="10 10" dot={false} />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
-
-                <Card className="glass-card md:rounded-[40px] rounded-3xl border-brand-green-light/5">
-                    <CardHeader className="pt-8 px-8">
-                        <CardTitle className="text-brand-green-dark text-xl font-black italic uppercase tracking-tight">Node Topology Load</CardTitle>
-                        <p className="text-[10px] font-bold text-brand-green-dark/40 uppercase tracking-widest italic">Inventory Power Distribution</p>
-                    </CardHeader>
-                    <CardContent className="h-[320px] flex items-center pr-8">
-                        <ResponsiveContainer width="60%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={pieData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={70}
-                                    outerRadius={100}
-                                    dataKey="value"
-                                    stroke="#fff"
-                                    strokeWidth={4}
-                                    paddingAngle={8}
-                                >
-                                    {pieData.map((_, idx) => <Cell key={idx} fill={COLORS[idx % COLORS.length]} className="hover:opacity-80 transition-opacity cursor-pointer" />)}
-                                </Pie>
-                                <RechartsTooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
-                        <div className="flex-1 space-y-4">
-                            {pieData.map((item, idx) => (
-                                <div key={idx} className="flex items-center justify-between">
+                    <CardContent className="px-8 pb-8">
+                        <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                            {gateway.txNodes.map((node) => (
+                                <div key={node.nodeId} className="flex items-center justify-between p-3 rounded-2xl bg-brand-green-light/5 border border-brand-green-light/10">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
-                                        <span className="text-[11px] font-black text-brand-green-dark/40 uppercase italic">{item.name}</span>
+                                        <div className={cn(
+                                            "w-2.5 h-2.5 rounded-full animate-pulse",
+                                            node.isOnline ? "bg-brand-green-light" : "bg-red-400"
+                                        )} />
+                                        <div>
+                                            <div className="text-[10px] font-black text-brand-green-dark uppercase italic leading-tight">{node.name}</div>
+                                            <div className="text-[8px] font-bold text-brand-green-dark/40 uppercase tracking-widest leading-tight">{node.nodeId}</div>
+                                        </div>
                                     </div>
-                                    <span className="text-sm font-black text-brand-green-dark italic tracking-tighter">{item.value} <span className="text-[10px] opacity-40 italic">kWh</span></span>
+                                    <div className="text-right">
+                                        <div className="text-[9px] font-black text-brand-green-dark italic">{node.isOnline ? 'LATENCY: 12ms' : 'OFFLINE'}</div>
+                                        <div className="text-[7px] font-bold text-brand-green-dark/30 uppercase tracking-[0.2em]">{new Date(node.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Vibration & Stress Analysis */}
+                <Card className="glass-card md:rounded-[40px] rounded-3xl border-brand-green-light/5 lg:col-span-2 overflow-hidden flex flex-col justify-between">
+                    <CardHeader className="pt-8 px-8 flex flex-row items-center justify-between">
+                        <div>
+                            <CardTitle className="text-brand-green-dark text-xl font-black italic uppercase tracking-tight">Plant Load Trend</CardTitle>
+                            <p className="text-[10px] font-bold text-brand-green-dark/40 uppercase tracking-widest italic">Live Hardware Heartbeat (kWh)</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[9px] font-black text-emerald-600 uppercase italic">Actively Tracking</span>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="h-[300px] pb-6 px-6 relative z-10">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={trendData}>
+                                <defs>
+                                    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feGaussianBlur stdDeviation="3" result="blur" />
+                                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                    </filter>
+                                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#000" strokeOpacity={0.03} vertical={false} />
+                                <XAxis
+                                    dataKey="time"
+                                    stroke="#000"
+                                    strokeOpacity={0.2}
+                                    tick={{ fontSize: 10, fontWeight: 900, fill: '#064e3b' }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    stroke="#000"
+                                    strokeOpacity={0.2}
+                                    tick={{ fontSize: 10, fontWeight: 900, fill: '#064e3b' }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                />
+                                <RechartsTooltip
+                                    content={({ active, payload }) => {
+                                        if (active && payload && payload.length) {
+                                            return (
+                                                <div className="bg-white/90 backdrop-blur-md border border-brand-green-light/20 p-4 rounded-[25px] shadow-2xl flex flex-col gap-1">
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-brand-green-dark/40 mb-1">{payload[0].payload.time}</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-2 h-2 rounded-full bg-[#10b981]" />
+                                                        <p className="text-sm font-black italic text-brand-green-dark">{payload[0].value} <span className="text-[10px] opacity-40">kWh</span></p>
+                                                    </div>
+                                                    {payload[1] && (
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
+                                                            <p className="text-sm font-black italic text-brand-green-dark/60">{payload[1].value} <span className="text-[10px] opacity-40">Pred.</span></p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="kwh"
+                                    stroke="#10b981"
+                                    strokeWidth={4}
+                                    dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
+                                    activeDot={{ r: 6, strokeWidth: 0 }}
+                                    filter="url(#glow)"
+                                    animationDuration={1500}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="predicted"
+                                    stroke="#3b82f6"
+                                    strokeWidth={3}
+                                    strokeDasharray="5 5"
+                                    dot={false}
+                                    activeDot={{ r: 4 }}
+                                    animationDuration={2000}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 {gateway.txNodes.map((node, idx) => {
                     const health = calculateMachineHealth(node);
                     const color = getStatusColor(health.status);
-                    const themes = ['theme-mint', 'theme-peach', 'theme-blue', 'theme-yellow'];
+                    const themes = [
+                        'bg-[#F0FFF4] border-[#D1FAE5]', // Minty
+                        'bg-[#FFF5F0] border-[#FFEDD5]', // Peachy
+                        'bg-[#F0F9FF] border-[#E0F2FE]', // Blueish
+                        'bg-[#FEFCE8] border-[#FEF9C3]'  // Yellowish
+                    ];
+
                     return (
-                        <Card key={node.nodeId} className={cn("glass-card shine-hover md:rounded-[35px] rounded-3xl overflow-hidden", themes[idx % 4])}>
-                            <CardContent className="p-6">
-                                <div className="flex justify-between items-center mb-6">
-                                    <div>
-                                        <div className="text-xl font-black italic text-brand-green-dark tracking-tighter uppercase">{node.nodeId}</div>
-                                        <Badge variant="outline" className="text-[7px] h-4 bg-white/40 border-black/5 uppercase font-black tracking-widest mt-1">
-                                            {node.phaseType} PH PROTOCOL
+                        <Card key={node.nodeId} className={cn(
+                            "border-none shadow-none rounded-[50px] overflow-hidden transition-all duration-500 hover:scale-[1.02]",
+                            themes[idx % 4]
+                        )}>
+                            <CardContent className="p-10 pt-12 relative overflow-hidden">
+                                {/* Top Header */}
+                                <div className="flex justify-between items-start mb-10">
+                                    <div className="space-y-3">
+                                        <h3 className="text-4xl font-black italic tracking-tighter text-brand-green-dark leading-none">
+                                            {node.name}
+                                        </h3>
+                                        <Badge variant="outline" className="bg-white/80 border-black/5 text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full text-brand-green-dark/60">
+                                            {node.phaseType === 'three' ? 'THREE PH PROTOCOL' : 'SINGLE PH PROTOCOL'}
                                         </Badge>
                                     </div>
-                                    <div className="w-3 h-3 rounded-full animate-pulse shadow-sm shadow-black/10" style={{ backgroundColor: color }} />
+                                    <div className="w-4 h-4 rounded-full shadow-sm animate-pulse" style={{ backgroundColor: color }} />
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="flex justify-between text-[10px] font-black italic uppercase tracking-wider">
-                                        <span className="opacity-30">AI Health Logic</span>
-                                        <span style={{ color }} className="brightness-90">{health.score}%</span>
+
+                                {/* Real Logs */}
+                                <div className="space-y-4 mb-10">
+                                    <div className="flex justify-between items-end">
+                                        <span className="text-[10px] font-black italic uppercase tracking-widest text-brand-green-dark/30">Real Logs</span>
+                                        <span className="text-sm font-black italic tracking-tighter text-brand-green-dark">{health.score}%</span>
                                     </div>
-                                    <Progress value={health.score} className="h-1.5 bg-black/5 rounded-full" />
-                                    <div className="grid grid-cols-2 gap-3 pt-2">
-                                        <div className="bg-white/40 p-3 rounded-2xl border border-white shadow-sm">
-                                            <div className="text-[8px] font-black opacity-30 uppercase italic mb-1">Load</div>
-                                            <div className="text-sm font-black text-brand-green-dark italic tracking-tighter">{node.currentKw.toFixed(1)} kW</div>
+                                    <div className="h-2.5 w-full bg-brand-green-dark/5 rounded-full overflow-hidden shadow-inner">
+                                        <div
+                                            className="h-full rounded-full transition-all duration-1000 ease-in-out shadow-[0_0_12px_rgba(0,0,0,0.2)]"
+                                            style={{
+                                                width: `${health.score}%`,
+                                                backgroundColor: color,
+                                                boxShadow: `0 0 10px ${color}80`
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Load/Cap Pills */}
+                                <div className="flex gap-4">
+                                    <div className="flex-1 bg-white/80 rounded-full px-6 py-4 border border-white flex flex-col items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                                        <div className="text-[8px] font-black uppercase opacity-20 mb-0.5">LOAD</div>
+                                        <div className="text-lg font-black italic text-brand-green-dark -mt-1 truncate drop-shadow-[0_0_8px_rgba(0,0,0,0.1)]">
+                                            {node.currentKw.toFixed(1)} <span className="text-[10px] opacity-40">kW</span>
                                         </div>
-                                        <div className="bg-white/40 p-3 rounded-2xl border border-white shadow-sm">
-                                            <div className="text-[8px] font-black opacity-30 uppercase italic mb-1">Cap</div>
-                                            <div className="text-sm font-black text-brand-green-dark italic tracking-tighter">{node.targetKw} kW</div>
+                                    </div>
+                                    <div className="flex-1 bg-white/80 rounded-full px-6 py-4 border border-white flex flex-col items-center justify-center shadow-sm group-hover:shadow-md transition-all">
+                                        <div className="text-[8px] font-black uppercase opacity-20 mb-0.5">CAP</div>
+                                        <div className="text-lg font-black italic text-brand-green-dark -mt-1 truncate drop-shadow-[0_0_8px_rgba(0,0,0,0.1)]">
+                                            {node.targetKw.toFixed(0)} <span className="text-[10px] opacity-40">kW</span>
                                         </div>
                                     </div>
                                 </div>

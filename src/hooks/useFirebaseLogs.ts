@@ -31,7 +31,7 @@ export function useFirebaseLogs() {
 
         // Real Firebase listener
         try {
-            const q = query(collection(db, "ai_logs"), orderBy("timestamp", "desc"), limit(20));
+            const q = query(collection(db, "AI_Logs"), orderBy("timestamp", "desc"), limit(20));
             const unsubscribe = onSnapshot(q, (snapshot) => {
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setLogs(data);

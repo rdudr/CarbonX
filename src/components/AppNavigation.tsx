@@ -29,11 +29,17 @@ const NAV_ITEMS = [
     { href: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 
-// ─── Desktop Top Navigation ───────────────────────────────────────────────────
+// ─── Desktop Top Navigation (Floating Pill) ──────────────────────────────────
 function DesktopNav({ pathname }: { pathname: string }) {
-    const { role, logout, user } = useAuth();
+    const { role, logout } = useAuth();
+    const [scrolled, setScrolled] = useState(false);
 
-    // Role-based filtering
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 20);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const visibleNavItems = NAV_ITEMS.filter(item => {
         if (role === 'ADMIN') return true;
         if (role === 'ENGINEER') return ['/dashboard', '/machines', '/energy', '/settings'].includes(item.href);
@@ -44,52 +50,55 @@ function DesktopNav({ pathname }: { pathname: string }) {
     return (
         <nav
             id="desktop-nav"
-            className="hidden md:flex items-center justify-between px-8 py-1 glass border-b border-brand-green-light/10 shadow-sm sticky top-0 z-50 print:hidden"
+            className={cn(
+                "fixed top-2 left-1/2 -translate-x-1/2 z-[100] transition-all duration-500 hidden md:flex items-center gap-1 p-1.5 rounded-full border border-white/40 shadow-2xl backdrop-blur-xl print:hidden",
+                scrolled ? "bg-white/70 w-[95%] max-w-5xl" : "bg-white/40 w-[90%] max-w-4xl"
+            )}
         >
-            {/* Logo + Brand */}
-            <Link href="/" className="flex items-center gap-2 group" id="nav-logo">
-                <Image src="/carbon_logo.png" alt="CarbonX Logo" width={80} height={28} className="group-hover:scale-105 transition-all duration-300 object-contain" priority />
+            {/* Logo Section */}
+            <Link href="/" className="pl-4 pr-6 flex items-center border-r border-black/5 group">
+                <Image src="/carbon_logo.png" alt="Logo" width={90} height={28} className="group-hover:scale-105 transition-transform object-contain" priority />
             </Link>
 
-            {/* Nav Links */}
-            <ul className="flex items-center gap-1" role="list">
+            {/* Icon Navigation */}
+            <ul className="flex items-center gap-1.5 px-4 flex-1 justify-center">
                 {visibleNavItems.map(({ href, label, icon: Icon }) => {
                     const isActive = pathname === href;
                     return (
-                        <li key={href}>
+                        <li key={href} className="relative group/nav">
                             <Link
                                 href={href}
-                                id={`nav-${label.toLowerCase().replace(/\s+/g, '-')}`}
                                 className={cn(
-                                    'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200',
+                                    "relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300",
                                     isActive
-                                        ? 'bg-brand-green-dark text-white shadow-md'
-                                        : 'text-brand-green-dark/70 hover:text-brand-green-dark hover:bg-brand-green-light/5'
+                                        ? "bg-brand-green-dark text-white shadow-lg scale-110"
+                                        : "text-brand-green-dark/60 hover:bg-brand-green-light/10 hover:text-brand-green-dark"
                                 )}
                             >
-                                <Icon size={16} />
-                                {label}
+                                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} className={cn(isActive && "animate-pulse")} />
+
+                                {/* Tooltip */}
+                                <span className="absolute top-[120%] left-1/2 -translate-x-1/2 px-3 py-1 bg-brand-green-dark text-white text-[10px] font-black uppercase tracking-widest rounded-full opacity-0 group-hover/nav:opacity-100 transition-opacity pointer-events-none shadow-xl border border-white/20 whitespace-nowrap">
+                                    {label}
+                                </span>
                             </Link>
                         </li>
                     );
                 })}
             </ul>
 
-            {/* User Profile & Logout */}
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-full border border-black/5">
-                    <UserCircle size={14} className="text-brand-green-dark/40" />
-                    <span className="text-[10px] font-black uppercase text-brand-green-dark/60 tracking-wider font-mono">
-                        {role}
-                    </span>
-                    <button onClick={logout} className="ml-2 p-1 hover:bg-red-50 text-red-400 hover:text-red-600 rounded-md transition-colors" title="Logout">
-                        <LogOut size={14} />
-                    </button>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-brand-green-dark/60 font-medium whitespace-nowrap">
+            {/* User & Status */}
+            <div className="flex items-center gap-3 pr-2 border-l border-black/5 pl-4">
+                <div className="flex items-center gap-2 pr-4 text-[9px] font-black text-brand-green-dark/40 uppercase tracking-widest">
                     <span className="w-2 h-2 rounded-full bg-brand-green-light animate-pulse" />
-                    Online
+                    {role}
                 </div>
+                <button
+                    onClick={logout}
+                    className="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all duration-300 shadow-sm"
+                >
+                    <LogOut size={16} />
+                </button>
             </div>
         </nav>
     );

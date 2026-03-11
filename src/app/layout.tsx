@@ -4,7 +4,7 @@ import './globals.css';
 import { AppNavigation } from '@/components/AppNavigation';
 import { PWAInstallBanner } from '@/components/PWAInstallBanner';
 import { AuthProvider } from '@/context/AuthContext';
-import LiquidEther from '@/components/LiquidEther';
+import FloatingLines from '@/components/ui/FloatingLines';
 import { AuthGuard } from '@/components/AuthGuard';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -44,6 +44,7 @@ export const metadata: Metadata = {
 };
 
 import { SystemProvider } from '@/context/SystemContext';
+import { TelemetryProvider } from '@/context/TelemetryContext';
 
 export default function RootLayout({
   children,
@@ -64,20 +65,28 @@ export default function RootLayout({
         <AuthProvider>
           <AuthGuard>
             <SystemProvider>
-              {/* PWA Install Prompt Banner */}
-              <PWAInstallBanner />
+              <TelemetryProvider>
+                {/* PWA Install Prompt Banner */}
+                <PWAInstallBanner />
 
-              {/* Responsive Navigation — top-left for desktop, hamburger for mobile */}
-              <AppNavigation />
+                {/* Responsive Navigation — top-left for desktop, hamburger for mobile */}
+                <AppNavigation />
 
-              {/* LiquidEther React Bits Background */}
-              <div className="fixed inset-0 -z-50 bg-black/5">
-                <LiquidEther colors={['#25671E', '#48A111', '#bbf7d0']} />
-              </div>
+                {/* FloatingLines React Bits Background */}
+                <div className="fixed inset-0 -z-50 bg-[#FCFDFD]">
+                  <FloatingLines
+                    linesGradient={['#25671E', '#48A111', '#F2B50B']}
+                    parallax={true}
+                    topWavePosition={{ x: 10.0, y: 0.5, rotate: -0.4 }}
+                    middleWavePosition={{ x: 5.0, y: 0.0, rotate: 0.2 }}
+                    bottomWavePosition={{ x: 2.0, y: -0.7, rotate: 0.4 }}
+                  />
+                </div>
 
-              <main className="relative z-10 p-4 md:p-8 max-w-7xl mx-auto min-h-[calc(100vh-80px)] pb-8">
-                {children}
-              </main>
+                <main className="relative z-10 p-4 md:p-8 max-w-7xl mx-auto min-h-[calc(100vh-80px)] pb-8">
+                  {children}
+                </main>
+              </TelemetryProvider>
             </SystemProvider>
           </AuthGuard>
         </AuthProvider>

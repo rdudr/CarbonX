@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  Activity, Zap, Leaf, Factory, ArrowRight, Globe, Box, HardHat,
-  Cpu, Shield, Layers, BarChart3, Database, Workflow, ShieldCheck
+  Activity, Zap, Leaf, ArrowRight, Globe, HardHat,
+  Cpu, Shield, Layers, Database, Workflow, ShieldCheck
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -41,7 +41,7 @@ function ProcessArchitecture() {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-32 relative overflow-hidden">
-      <div className="absolute inset-0 blueprint-bg opacity-30 -z-10" />
+      {/* Background Grid - Removed per user request for clean floating lines */}
 
       <div className="text-center mb-20 space-y-4">
         <h2 className="text-4xl md:text-6xl font-black text-brand-green-dark tracking-tighter uppercase italic">
@@ -153,13 +153,6 @@ function TechnicalHighlights() {
 
 function HeroSection() {
   const { isAuthenticated } = useAuth();
-  const [activeModel, setActiveModel] = useState<'platform' | 'hardware' | 'analytics'>('platform');
-
-  const models = {
-    platform: { title: "App Launcher", icon: Globe, detail: "Cloud Control" },
-    hardware: { title: "Core Node", icon: Box, detail: "Edge Sensor" },
-    analytics: { title: "Data Forensics", icon: Activity, detail: "AI Engine" }
-  };
 
   return (
     <div className="min-h-[90vh] flex flex-col items-center justify-center relative py-12 px-4 overflow-hidden">
@@ -216,51 +209,33 @@ function HeroSection() {
           </motion.div>
         </div>
 
-        {/* 3D Product Model Showcase with Switcher */}
+        {/* Device Image Showcase */}
         <div className="relative h-[650px] flex flex-col items-center justify-center gap-10 group">
           <div className="absolute inset-0 bg-brand-green-light/5 blur-[100px] rounded-full scale-75 animate-pulse" />
 
           <motion.div
-            key={activeModel}
             initial={{ opacity: 0, x: 50, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -50, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 100 }}
-            className="w-full max-w-lg aspect-square glass-thick md:rounded-[80px] rounded-[50px] border border-white flex items-center justify-center relative shadow-inner overflow-hidden"
+            className="w-full max-w-lg lg:max-w-xl aspect-square glass-thick md:rounded-[80px] rounded-[50px] border border-white flex items-center justify-center relative shadow-inner overflow-hidden"
           >
             <div className="absolute inset-0 dot-pattern opacity-20" />
             <div className="absolute top-8 left-8 p-3 glass rounded-2xl border-white/40">
               <div className="w-2 h-2 rounded-full bg-brand-green-light animate-ping" />
             </div>
 
-            <div className="flex flex-col items-center gap-8 relative z-10 text-brand-green-dark/10">
-              {React.createElement(models[activeModel].icon, { size: 160, className: "animate-float text-brand-green-dark/20" })}
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-[10px] font-black uppercase tracking-[0.5em] text-brand-green-dark/40">{models[activeModel].title}</div>
-                <div className="h-1 w-20 bg-brand-green-light/20 rounded-full" />
-              </div>
+            <div className="relative z-10 w-full h-full p-12 transition-transform duration-700 group-hover:scale-105">
+              <Image
+                src="/image.png"
+                alt="CarbonX Edge Node"
+                fill
+                className="object-contain p-8 drop-shadow-2xl"
+                priority
+              />
             </div>
 
             <div className="absolute bottom-0 right-0 w-32 h-32 border-r-2 border-b-2 border-brand-green-light/10 rounded-br-[80px]" />
           </motion.div>
-
-          {/* Model Switcher Tabs */}
-          <div className="flex gap-4 p-2 bg-black/5 rounded-3xl border border-black/5 relative z-20 backdrop-blur-md">
-            {(['platform', 'hardware', 'analytics'] as const).map((m) => (
-              <button
-                key={m}
-                onClick={() => setActiveModel(m)}
-                className={cn(
-                  "px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all transform active:scale-95",
-                  activeModel === m
-                    ? "bg-brand-green-dark text-white shadow-xl shadow-brand-green-dark/20"
-                    : "text-brand-green-dark/40 hover:text-brand-green-dark hover:bg-white/50"
-                )}
-              >
-                {models[m].detail}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </div>
@@ -367,14 +342,18 @@ function HardwareShowcase() {
           )} />
           <div className="absolute inset-0 dot-pattern opacity-10" />
 
-          <div className="flex flex-col items-center gap-10 relative z-10">
-            <div className={cn(
-              "w-32 h-32 rounded-[2.5rem] border-4 flex items-center justify-center transition-all duration-500 shadow-xl bg-white",
-              mode === 'operational' ? "border-brand-green-light text-brand-green-light" :
-                mode === 'debug' ? "border-brand-yellow text-brand-yellow" :
-                  "border-red-500 text-red-500 animate-pulse"
-            )}>
-              <HardHat size={56} />
+          <div className="flex flex-col items-center gap-10 relative z-10 w-full h-full justify-center p-12">
+            <div className="relative w-64 h-64">
+              <Image
+                src="/image.png"
+                alt="CarbonX Hardware Node"
+                fill
+                className={cn(
+                  "object-contain drop-shadow-2xl transition-all duration-500",
+                  mode === 'emergency' ? "brightness-50 sepia hue-rotate-[-50deg] saturate-200" :
+                    mode === 'debug' ? "brightness-110 saturate-150 drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]" : ""
+                )}
+              />
             </div>
             <div className="text-center space-y-2">
               <div className="text-brand-green-dark font-black text-3xl italic uppercase tracking-tighter">TX-Node v4.0</div>
